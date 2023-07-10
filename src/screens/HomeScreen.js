@@ -114,13 +114,17 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.MainContainer}>
+
+            {/* StatusBar */}
             <View style={{
                 width: "100%",
                 height: STATUS_BAR_HEIGHT,
-                backgroundColor: Color.colorPrimaryDark
+                backgroundColor: Color.inquiryBlueDark
             }}>
-                <StatusBar translucent={false} backgroundColor={Color.colorPrimaryDark} barStyle="light-content" hidden={false} animated />
+                <StatusBar translucent={false} backgroundColor={Color.inquiryBlueDark} barStyle="light-content" hidden={false} animated />
             </View>
+
+            {/* StatusBar */}
 
             {/* Toolbar */}
             <View style={styles.navBar} >
@@ -143,39 +147,118 @@ const HomeScreen = ({ navigation }) => {
             {/* Toolbar */}
 
 
+            {/* Top Bg */}
+
             <View style={styles.TopView}>
 
             </View>
+            {/* Top Bg */}
 
-            <Card style={styles.cardView}>
-                <TouchableOpacity style={styles.itemContainer} onPress={() => viewInquiry()}>
-                    <Image
-                        style={styles.itemIcon}
-                        source={require('../assets/image/ic_view_inquiry.png')}>
-                    </Image>
 
-                    <Text style={styles.itemTitle}>{String.viewInquiry}</Text>
+            {/* Menu container */}
+            <View style={{ width: wp('100%'), flexDirection: 'column', position: 'absolute' }}>
 
-                    <View style={styles.flexEnd}>
+                <Card style={styles.cardView}>
+                    {/* View Inquiry */}
+                    <TouchableOpacity style={styles.itemContainerTop} onPress={() => viewInquiry()}>
                         <Image
-                            style={styles.itemArrowIcon}
-                            source={require('../assets/image/ic_forward_arrow_black.png')}>
+                            style={styles.itemIcon}
+                            source={require('../assets/image/ic_view_inquiry.png')}>
                         </Image>
-                    </View>
 
-                </TouchableOpacity>
-            </Card>
+                        <Text style={styles.itemTitle}>{String.viewInquiry}</Text>
 
-            <Image
-                style={styles.logoImage}
-                source={require('../assets/image/ic_app_logo_circle.png')}>
-            </Image>
+                        <View style={styles.flexEnd}>
+                            <Image
+                                style={styles.itemArrowIcon}
+                                source={require('../assets/image/ic_forward_arrow_black.png')}>
+                            </Image>
+                        </View>
+                    </TouchableOpacity>
+                    {/* View Inquiry */}
+                </Card>
 
-            {loading ?
-                <View style={{ flex: 1, alignItems: 'center', marginTop: 50 }}>
-                    <Loader />
-                </View>
-                : null}
+
+
+                {/* Logo image */}
+                <Image
+                    style={styles.logoImage}
+                    source={require('../assets/image/ic_app_logo_blue.png')}>
+                </Image>
+
+                {/* Logo image */}
+
+
+            </View>
+            {/* Menu container */}
+
+
+            <View style={{ width: wp('100%'), flexDirection: 'column', height: 300, flex: 1, marginTop: Platform.OS === 'ios' ? 50 : 70 }}>
+
+
+                <Card style={styles.cardViewItem}>
+                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewInquiry()}>
+                        <Image
+                            style={styles.itemIcon}
+                            source={require('../assets/image/ic_factory_response_green.png')}>
+                        </Image>
+
+                        <Text style={styles.itemTitle}>{String.factoryResponse}</Text>
+
+                        <View style={styles.flexEnd}>
+                            <Image
+                                style={styles.itemArrowIcon}
+                                source={require('../assets/image/ic_forward_arrow_black.png')}>
+                            </Image>
+                        </View>
+
+                    </TouchableOpacity>
+                </Card>
+
+                <Card style={styles.cardViewItem}>
+                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewInquiry()}>
+                        <Image
+                            style={styles.itemIcon}
+                            source={require('../assets/image/ic_view_po.png')}>
+                        </Image>
+
+                        <Text style={styles.itemTitle}>{String.viewPurchaseOrder}</Text>
+
+                        <View style={styles.flexEnd}>
+                            <Image
+                                style={styles.itemArrowIcon}
+                                source={require('../assets/image/ic_forward_arrow_black.png')}>
+                            </Image>
+                        </View>
+
+                    </TouchableOpacity>
+                </Card>
+
+
+                <Card style={styles.cardViewItem}>
+                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewInquiry()}>
+                        <Image
+                            style={styles.itemIcon}
+                            source={require('../assets/image/ic_material_label.png')}>
+                        </Image>
+
+                        <Text style={styles.itemTitle}>{String.materialsAndLabel}</Text>
+
+                        <View style={styles.flexEnd}>
+                            <Image
+                                style={styles.itemArrowIcon}
+                                source={require('../assets/image/ic_forward_arrow_black.png')}>
+                            </Image>
+                        </View>
+
+                    </TouchableOpacity>
+                </Card>
+
+            </View>
+
+
+
+
         </View>
     );
 
@@ -187,14 +270,16 @@ const styles = StyleSheet.create({
 
     MainContainer: {
         flex: 1,
-        backgroundColor: Color.white
+        backgroundColor: Color.white,
+        flexDirection: 'column',
+
     },
     TopView: {
-        backgroundColor: Color.colorPrimary,
+        backgroundColor: Color.inquiryBlue,
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: wp('100%'),
-        height: hp('20%'),
+        height: hp('15%'),
         borderBottomLeftRadius: 24,
         borderBottomRightRadius: 24,
         borderTopLeftRadius: 0,
@@ -210,17 +295,24 @@ const styles = StyleSheet.create({
     },
     cardView: {
         width: wp('90%'),
-        height: 175,
         backgroundColor: 'white',
         alignItems: 'center',
-        paddingTop: 20,
-        paddingBottom: 20,
+        padding: 0,
         alignItems: 'center',
         alignSelf: 'center',
         position: 'absolute',
         marginTop: Platform.OS === 'ios' ? 150 : 110,
     },
 
+    cardViewItem: {
+        width: wp('90%'),
+        backgroundColor: 'white',
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginTop: Platform.OS === 'ios' ? 10 : 10,
+        padding: 0,
+        borderRadius: 5,
+    },
     titleText: {
         color: Color.white,
         fontSize: 18,
@@ -234,19 +326,33 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: Platform.OS === 'ios' ? 102 : 60,
     },
-    itemContainer: {
-        width: wp('80%'),
+    itemContainerTop: {
+        width: wp('90%'),
         height: Platform.OS === 'ios' ? 70 : 74,
         alignItems: 'center',
         justifyContent: 'flex-start',
         flexDirection: 'row',
-        borderTopWidth: 0.5,
-        borderLeftWidth: 0.5,
-        borderRightWidth: 0.5,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
         borderBottomWidth: 5,
-        borderColor: Color.colorPrimary,
+        borderColor: Color.inquiryBlue,
         borderRadius: 4,
         marginTop: 50
+    },
+    itemContainer: {
+        width: wp('90%'),
+        height: Platform.OS === 'ios' ? 70 : 74,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderBottomWidth: 5,
+        borderColor: Color.inquiryBlue,
+        borderRadius: 5,
+        marginTop: 0
     },
     itemIcon: {
         width: Platform.OS === 'ios' ? 32 : 36,
@@ -266,7 +372,6 @@ const styles = StyleSheet.create({
         marginBottom: 12
     },
     flexEnd: {
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-end',
         marginTop: 12,
@@ -283,7 +388,7 @@ const styles = StyleSheet.create({
         height: 55,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: Color.colorPrimary,
+        backgroundColor: Color.inquiryBlue,
         marginTop: Platform.OS === 'ios' ? 0 : 0,
     },
     navBarTitleStyle: {

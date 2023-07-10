@@ -27,5 +27,9 @@ export default {
     styleNo: 'Style No',
     itemOrArticleName: 'Item / Article Name',
     otpError: 'OTP Error',
-    pleaseEntherOTP: 'Please Enther the OTP'
+    pleaseEntherOTP: 'Please Enther the OTP',
+    factoryResponse: 'Factory Response',
+    viewPurchaseOrder: 'View Purchase Order',
+    materialsAndLabel: 'Materials & Label'
+
 }

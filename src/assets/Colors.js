@@ -60,5 +60,7 @@ export default {
     acent: '#FC4445',
     homeMenuLightGreen: '#E5F4F3',
     viewInquiryBorderGray: '#F4F4F4',
-    viewInquiryBorderBlue: '#E7EEF7'
+    viewInquiryBorderBlue: '#E7EEF7',
+    inquiryBlue: '#4E90DE',
+    inquiryBlueDark: '#2877d7'
 }
