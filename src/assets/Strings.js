@@ -30,6 +30,7 @@ export default {
     pleaseEntherOTP: 'Please Enther the OTP',
     factoryResponse: 'Factory Response',
     viewPurchaseOrder: 'View Purchase Order',
-    materialsAndLabel: 'Materials & Label'
+    materialsAndLabel: 'Materials & Label',
+    inquiryDetails: 'Inquiry Details',
 
 }

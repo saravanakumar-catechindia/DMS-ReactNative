@@ -6,7 +6,7 @@ import String from '../assets/Strings';
 import Fontfamily from '../components/Fontfamily';
 import Card from '../utils/Card';
 import axios from '../restapi/Axios';
-import Loader from '../utils/Loader';
+import Loader from '../utils/LoaderInquiry';
 import Modal from '../utils/Model';
 import { apidecrypt, apiencrypt, showAlertOrToast } from '../utils/Helper';
 
@@ -90,6 +90,12 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
     }
 
+    const viewInquiryDetails = async () => {
+        navigation.navigate('InquiryDetails', {
+            name: 'InquiryDetails'
+        })
+    }
+
     const renderListItem = ({ item, index }) => (
 
         <View style={styles.listContainer}>
@@ -117,7 +123,7 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
                 <View style={styles.itemIconContainer} >
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => viewInquiryDetails()}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_eye_gray.png')} />
                     </TouchableOpacity>
@@ -157,9 +163,9 @@ const ViewInquiryScreen = ({ navigation, route }) => {
             <View style={{
                 width: "100%",
                 height: STATUS_BAR_HEIGHT,
-                backgroundColor: Color.colorPrimaryDark
+                backgroundColor: Color.inquiryBlueDark
             }}>
-                <StatusBar translucent={false} backgroundColor={Color.colorPrimaryDark} barStyle="light-content" hidden={false} animated />
+                <StatusBar translucent={false} backgroundColor={Color.inquiryBlueDark} barStyle="light-content" hidden={false} animated />
 
             </View>
 
@@ -216,7 +222,7 @@ const styles = StyleSheet.create({
         height: 55,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: Color.colorPrimary,
+        backgroundColor: Color.inquiryBlue,
         marginTop: Platform.OS === 'ios' ? 0 : 0,
     },
     navBarTitleStyle: {

@@ -193,7 +193,7 @@ const HomeScreen = ({ navigation }) => {
             {/* Menu container */}
 
 
-            <View style={{ width: wp('100%'), flexDirection: 'column', height: 300, flex: 1, marginTop: Platform.OS === 'ios' ? 50 : 70 }}>
+            <View style={{ width: wp('100%'), flexDirection: 'column', height: 300, flex: 1, marginTop: Platform.OS === 'ios' ? 50 : 65 }}>
 
 
                 <Card style={styles.cardViewItem}>

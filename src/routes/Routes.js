@@ -5,6 +5,7 @@ import LoginScreen from '../screens/LoginScreen';
 import OTPScreen from '../screens/OTPScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ViewInquiryScreen from '../screens/ViewInquiryScreen';
+import InquiryDetails from '../screens/InquiryDetails';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -43,6 +44,12 @@ const App = () => {
         <Stack.Screen
           name="ViewInquiryScreen"
           component={ViewInquiryScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="InquiryDetails"
+          component={InquiryDetails}
           options={{ headerShown: false }}
         />
 
