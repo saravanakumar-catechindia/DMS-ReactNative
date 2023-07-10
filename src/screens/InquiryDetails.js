@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, StatusBar, StyleSheet, Platform, Text, View, TouchableOpacity, FlatList, BackHandler, SafeAreaView } from 'react-native';
+import { Image, StatusBar, StyleSheet, Platform, Text, View, TouchableOpacity, FlatList, BackHandler, SafeAreaView, Dimensions } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Color from '../assets/Colors';
 import String from '../assets/Strings';
@@ -9,9 +9,16 @@ import axios from '../restapi/Axios';
 import Loader from '../utils/LoaderInquiry';
 import Modal from '../utils/Model';
 import { apidecrypt, apiencrypt, showAlertOrToast } from '../utils/Helper';
+import Pdf from 'react-native-pdf';
+
 
 const InquiryDetails = ({ navigation, route }) => {
     const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 35 : 0;
+
+    // const pdfUrl = 'https://staging.catech.co.in:81/public/Inquiry/64.pdf'
+
+    const [pdfUrl, setPdfUrl] = useState(route.params.pdfUrl)
+
 
     useEffect(() => {
 
@@ -19,7 +26,6 @@ const InquiryDetails = ({ navigation, route }) => {
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
         };
-
     }, [])
 
     function handleBackButtonClick() {
@@ -30,7 +36,7 @@ const InquiryDetails = ({ navigation, route }) => {
     return (
 
         <View style={styles.MainContainer}>
-          <View style={{
+            <View style={{
                 width: "100%",
                 height: STATUS_BAR_HEIGHT,
                 backgroundColor: Color.inquiryBlueDark
@@ -58,11 +64,37 @@ const InquiryDetails = ({ navigation, route }) => {
             </View>
 
             {/* Toolbar */}
-          
 
 
+
+            <View style={styles.container}>
+                <Pdf
+                    source={{
+                        uri: pdfUrl,
+                        cache: true,
+                    }}
+                    trustAllCerts={false}
+                    onLoadComplete={(numberOfPages, filePath) => {
+                        console.log(`Number of pages: ${numberOfPages}`);
+                    }}
+                    onPageChanged={(page, numberOfPages) => {
+                        console.log(`Current page: ${page}`);
+                    }}
+                    onError={(error) => {
+                        console.log(error);
+                    }}
+                    onPressLink={(uri) => {
+                        console.log(`Link pressed: ${uri}`);
+                    }}
+                    style={styles.pdf}
+                    renderActivityIndicator={(progress) => <Loader />}
+                    />
+                    
             </View>
-);
+
+
+        </View>
+    );
 
 };
 export default InquiryDetails;
@@ -109,77 +141,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         alignSelf: 'center'
     },
-    listContainer: {
+    container: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start'
+    },
+    pdf: {
+        flex: 1,
         width: wp('100%'),
-        backgroundColor: Color.white,
-        alignItems: 'center'
-    },
-    itemSeperator: {
-        height: 10
-    },
-    contentContainerStyle: {
-        paddingTop: 10,
-        paddingBottom: 10
-    },
-    itemGrayContainer: {
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        backgroundColor: Color.viewInquiryBorderGray,
-
-    },
-    itemBlueContainer: {
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        backgroundColor: Color.viewInquiryBorderBlue,
-    },
-    itemIconContainer: {
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        backgroundColor: Color.white,
-        paddingLeft: 16,
-        paddingRight: 16,
-        borderRadius: 10
-    },
-    menuIcon: {
-        width: 20,
-        height: 20,
-        resizeMode: 'contain',
-        marginTop: 8,
-        marginBottom: 8
-    },
-    veticalLine: {
-        width: 0.5,
-        backgroundColor: Color.gIBox
-    },
-    itemIcon: {
-        width: 36,
-        height: 36
-    },
-    itemTitle: {
-        color: Color.black,
-        fontSize: 12,
-        fontFamily: Fontfamily.poppinsMedium,
-        marginLeft: 16,
-        marginRight: 16,
-        marginTop: 10,
-        marginBottom: 10
-    },
-    itemContent: {
-        color: Color.black,
-        fontSize: 12,
-        fontFamily: Fontfamily.poppinsRegular,
-        marginLeft: 16,
-        marginRight: 16,
-        marginTop: 10,
-        marginBottom: 10
-    },
-    cardView: {
-        width: wp('90%'),
-        backgroundColor: 'white',
-        paddingTop: 0,
-        paddingBottom: 0,
-        paddingLeft: 0,
-        paddingRight: 0
-
-    },
+        height: hp('100%')
+    }
 })

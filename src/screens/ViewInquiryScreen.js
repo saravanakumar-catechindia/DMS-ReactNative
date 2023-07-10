@@ -19,6 +19,7 @@ const ViewInquiryScreen = ({ navigation, route }) => {
     ];
 
     const [Data, setData] = useState(DATA);
+    const [pdfPath, setPdfPath] = useState('')
     const [inquiryNo, setInquiryNo] = useState('')
     const [inquiryDate, setInquiryDate] = useState('')
     const [styleNo, setStyleNo] = useState('')
@@ -75,6 +76,9 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                 // response.data.data.data
                 if (data.hasOwnProperty('data')) {
                     if (data.data.hasOwnProperty('data')) {
+                        if (data.hasOwnProperty('pdfpath')) {
+                            setPdfPath(data.pdfpath)
+                        }
                         setData(data.data.data)
                     }
                 }
@@ -90,9 +94,11 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
     }
 
-    const viewInquiryDetails = async () => {
+    const viewInquiryDetails = async (id) => {
+        console.log('pdfUrl', pdfPath + id + '.pdf')
         navigation.navigate('InquiryDetails', {
-            name: 'InquiryDetails'
+            name: 'InquiryDetails',
+            pdfUrl: pdfPath + id + '.pdf'
         })
     }
 
@@ -123,7 +129,7 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
                 <View style={styles.itemIconContainer} >
 
-                    <TouchableOpacity onPress={() => viewInquiryDetails()}>
+                    <TouchableOpacity onPress={() => viewInquiryDetails(item.id)}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_eye_gray.png')} />
                     </TouchableOpacity>
