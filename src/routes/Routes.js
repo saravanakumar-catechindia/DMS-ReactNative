@@ -6,6 +6,7 @@ import OTPScreen from '../screens/OTPScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ViewInquiryScreen from '../screens/ViewInquiryScreen';
 import InquiryDetails from '../screens/InquiryDetails';
+import FactoryResponse from '../screens/FactoryResponse';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -50,6 +51,12 @@ const App = () => {
         <Stack.Screen
           name="InquiryDetails"
           component={InquiryDetails}
+          options={{ headerShown: false }}
+        />
+        
+        <Stack.Screen
+          name="FactoryResponse"
+          component={FactoryResponse}
           options={{ headerShown: false }}
         />
 

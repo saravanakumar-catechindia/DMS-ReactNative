@@ -23,6 +23,7 @@ export default {
     home: 'Home',
     viewInquiry: 'View Inquiry',
     inquiryNo: 'Inquiry No',
+    inquiryNoColon: 'Inquiry No : ',
     inquiryDate: 'Inquiry Date',
     styleNo: 'Style No',
     itemOrArticleName: 'Item / Article Name',
@@ -32,5 +33,12 @@ export default {
     viewPurchaseOrder: 'View Purchase Order',
     materialsAndLabel: 'Materials & Label',
     inquiryDetails: 'Inquiry Details',
-
+    factoryResponse: 'Factory Response',
+    factory: 'Factory',
+    contactName: 'Contact Name',
+    phoneNumber: 'Phone Number',
+    price: 'Price',
+    generatePurchaseOrder: 'Generate Purchase Order',
+    inquiryShortForm: 'IN',
+    indianRupeeSymbol: '\u20B9'
 }

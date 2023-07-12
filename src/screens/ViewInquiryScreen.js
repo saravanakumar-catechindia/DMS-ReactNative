@@ -9,6 +9,7 @@ import axios from '../restapi/Axios';
 import Loader from '../utils/LoaderInquiry';
 import Modal from '../utils/Model';
 import { apidecrypt, apiencrypt, showAlertOrToast } from '../utils/Helper';
+import FactoryResponse from './FactoryResponse';
 
 
 const ViewInquiryScreen = ({ navigation, route }) => {
@@ -95,16 +96,24 @@ const ViewInquiryScreen = ({ navigation, route }) => {
     }
 
     const viewInquiryDetails = async (id) => {
-        console.log('pdfUrl', pdfPath + id + '.pdf')
         navigation.navigate('InquiryDetails', {
             name: 'InquiryDetails',
             pdfUrl: pdfPath + id + '.pdf'
         })
     }
 
+    const viewFactoryResponse = async (id, inquiryNo) => {
+        navigation.navigate('FactoryResponse', {
+            name: 'FactoryResponse',
+            id: id,
+            token: token,
+            userId: userId
+        })
+    }
+
     const renderListItem = ({ item, index }) => (
 
-        <View style={styles.listContainer}>
+        <View style={styles.listContainer} key={item.id}>
             <Card style={styles.cardView}>
 
                 <View style={styles.itemGrayContainer} >
@@ -134,7 +143,7 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                             source={require('../assets/image/ic_eye_gray.png')} />
                     </TouchableOpacity>
                     <View style={styles.veticalLine}></View>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => viewFactoryResponse(item.id, item.inquiryNo)}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_factory_response_gray.png')} />
                     </TouchableOpacity>

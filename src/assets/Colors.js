@@ -62,5 +62,9 @@ export default {
     viewInquiryBorderGray: '#F4F4F4',
     viewInquiryBorderBlue: '#E7EEF7',
     inquiryBlue: '#4E90DE',
-    inquiryBlueDark: '#2877d7'
+    inquiryBlueDark: '#2877d7',
+    pageBackground: '#F0F2F6',
+    inquiryTextGray: '#888888',
+    inquiryPrice: '#EF6262',
+    gray1: '#E9E9E9'
 }

@@ -197,7 +197,7 @@ const HomeScreen = ({ navigation }) => {
 
 
                 <Card style={styles.cardViewItem}>
-                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewInquiry()}>
+                    <TouchableOpacity style={styles.itemContainer}>
                         <Image
                             style={styles.itemIcon}
                             source={require('../assets/image/ic_factory_response_green.png')}>
@@ -216,7 +216,7 @@ const HomeScreen = ({ navigation }) => {
                 </Card>
 
                 <Card style={styles.cardViewItem}>
-                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewInquiry()}>
+                    <TouchableOpacity style={styles.itemContainer}>
                         <Image
                             style={styles.itemIcon}
                             source={require('../assets/image/ic_view_po.png')}>
@@ -236,7 +236,7 @@ const HomeScreen = ({ navigation }) => {
 
 
                 <Card style={styles.cardViewItem}>
-                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewInquiry()}>
+                    <TouchableOpacity style={styles.itemContainer}>
                         <Image
                             style={styles.itemIcon}
                             source={require('../assets/image/ic_material_label.png')}>

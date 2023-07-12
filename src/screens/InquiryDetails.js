@@ -15,8 +15,6 @@ import Pdf from 'react-native-pdf';
 const InquiryDetails = ({ navigation, route }) => {
     const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 35 : 0;
 
-    // const pdfUrl = 'https://staging.catech.co.in:81/public/Inquiry/64.pdf'
-
     const [pdfUrl, setPdfUrl] = useState(route.params.pdfUrl)
 
 
