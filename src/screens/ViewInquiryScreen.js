@@ -107,7 +107,9 @@ const ViewInquiryScreen = ({ navigation, route }) => {
             name: 'FactoryResponse',
             id: id,
             token: token,
-            userId: userId
+            userId: userId,
+            companyId: companyId,
+            workspaceId: workspaceId
         })
     }
 

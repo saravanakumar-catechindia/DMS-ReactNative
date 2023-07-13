@@ -40,5 +40,6 @@ export default {
     price: 'Price',
     generatePurchaseOrder: 'Generate Purchase Order',
     inquiryShortForm: 'IN',
-    indianRupeeSymbol: '\u20B9'
+    indianRupeeSymbol: '\u20B9',
+    selectInquiryNo: 'Select Inquiry No'
 }
