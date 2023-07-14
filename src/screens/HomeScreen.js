@@ -112,6 +112,18 @@ const HomeScreen = ({ navigation }) => {
         }
     }
 
+    const viewFactoryResponse = async () => {
+        navigation.navigate('FactoryResponse', {
+            name: 'FactoryResponse',
+            id: 0,
+            token: token,
+            userId: userId,
+            companyId: companyId,
+            workspaceId: workspaceId,
+            fromInquiryList: true
+        })
+    }
+
     return (
         <View style={styles.MainContainer}>
 
@@ -197,7 +209,7 @@ const HomeScreen = ({ navigation }) => {
 
 
                 <Card style={styles.cardViewItem}>
-                    <TouchableOpacity style={styles.itemContainer}>
+                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewFactoryResponse()}>
                         <Image
                             style={styles.itemIcon}
                             source={require('../assets/image/ic_factory_response_green.png')}>

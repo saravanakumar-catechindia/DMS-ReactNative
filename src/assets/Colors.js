@@ -66,5 +66,6 @@ export default {
     pageBackground: '#F0F2F6',
     inquiryTextGray: '#888888',
     inquiryPrice: '#EF6262',
-    gray1: '#E9E9E9'
+    gray1: '#E9E9E9',
+    hintColor: '#727272'
 }

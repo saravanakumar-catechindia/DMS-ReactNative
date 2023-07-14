@@ -21,7 +21,6 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
     const [Data, setData] = useState(DATA);
     const [pdfPath, setPdfPath] = useState('')
-    const [inquiryNo, setInquiryNo] = useState('')
     const [inquiryDate, setInquiryDate] = useState('')
     const [styleNo, setStyleNo] = useState('')
     const [articleName, setArticleName] = useState('')
@@ -102,14 +101,15 @@ const ViewInquiryScreen = ({ navigation, route }) => {
         })
     }
 
-    const viewFactoryResponse = async (id, inquiryNo) => {
+    const viewFactoryResponse = async (id) => {
         navigation.navigate('FactoryResponse', {
             name: 'FactoryResponse',
             id: id,
             token: token,
             userId: userId,
             companyId: companyId,
-            workspaceId: workspaceId
+            workspaceId: workspaceId,
+            fromInquiryList: false
         })
     }
 
@@ -145,7 +145,7 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                             source={require('../assets/image/ic_eye_gray.png')} />
                     </TouchableOpacity>
                     <View style={styles.veticalLine}></View>
-                    <TouchableOpacity onPress={() => viewFactoryResponse(item.id, item.inquiryNo)}>
+                    <TouchableOpacity onPress={() => viewFactoryResponse(item.id)}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_factory_response_gray.png')} />
                     </TouchableOpacity>

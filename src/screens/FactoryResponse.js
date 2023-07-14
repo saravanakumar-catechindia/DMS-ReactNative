@@ -29,6 +29,9 @@ const FactoryResponse = ({ navigation, route }) => {
     const [Data, setData] = useState(DATA);
     const [pdfUrl, setPdfUrl] = useState(route.params.pdfUrl)
     const [inquiryId, setInquiryId] = useState(route.params.id)
+    const [fromInquiryList, setFromInquiryList] = useState(route.params.fromInquiryList)
+    const [isShowInquiryNo, setIsShowInquiryNo] = useState(false)
+    const [isShowDropDown, setIsShowDropDown] = useState(false)
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState(route.params.token);
     const [userId, setUserId] = useState(route.params.userId)
@@ -44,8 +47,11 @@ const FactoryResponse = ({ navigation, route }) => {
 
 
     useEffect(() => {
-        getInquuiryList()
-        getFactoryResponseList()
+        if (fromInquiryList) {
+            getInquuiryList()
+        } else {
+            getFactoryResponseList(inquiryId)
+        }
         BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
@@ -60,10 +66,6 @@ const FactoryResponse = ({ navigation, route }) => {
     const getInquuiryList = () => {
 
         setLoading(true);
-
-        console.log('user_id', userId)
-        console.log('companyId', companyId)
-        console.log('workspaceId', workspaceId)
 
         axios.post('get-inquiry', apiencrypt({
             user_id: userId,
@@ -81,33 +83,23 @@ const FactoryResponse = ({ navigation, route }) => {
             },
         })
             .then((response) => {
-               // console.log('response', response.data)
+                console.log('response', response.data)
 
-              //  console.log(apidecrypt(response.data))
+                console.log(apidecrypt(response.data))
 
                 let data = apidecrypt(response.data);
 
                 if (data.hasOwnProperty('data')) {
                     if (data.hasOwnProperty('data')) {
-                       // setDropDownValues(data.data.data)
 
                         var dataArray = data.data.data
                         console.log('dataArray inside ', dataArray)
-                       
+
                         let inData = [...dropDownValues]
                         dataArray.map((item) => {
-                            console.log('dataArray loop ', item.id)
-                            inData.push({title: String.inquiryShortForm + '-' + item.id, id: item.id})
+                            inData.push({ title: String.inquiryShortForm + '-' + item.id, id: item.id })
                         });
                         setDropDownValues(inData)
-                       // setDropDownValues([...dropDownValues, inData])
-
-                       // setDropDownValues((array) => [...array, inData]);
-
-                      //  handleChange(inData)
-
-                        console.log('dataArray inData ', inData)
-                        console.log('dataArray dropDownValues here ', dropDownValues)
                     }
                 }
 
@@ -117,6 +109,9 @@ const FactoryResponse = ({ navigation, route }) => {
             }).then(function () {
                 // always executed
                 setLoading(false);
+                if (fromInquiryList) {
+                    setIsShowDropDown(true)
+                }
             });
 
 
@@ -124,9 +119,9 @@ const FactoryResponse = ({ navigation, route }) => {
 
     const handleChange = (newValue) => {
         setDropDownValues((prevState) => [...prevState, newValue]);
-      };
+    };
 
-    const getFactoryResponseList = () => {
+    const getFactoryResponseList = (inquiryId) => {
 
         setLoading(true);
 
@@ -147,7 +142,7 @@ const FactoryResponse = ({ navigation, route }) => {
                 let data = apidecrypt(response.data);
 
                 if (data.hasOwnProperty('data')) {
-                        setData(data.data)
+                    setData(data.data)
                 }
 
             })
@@ -156,6 +151,9 @@ const FactoryResponse = ({ navigation, route }) => {
             }).then(function () {
                 // always executed
                 setLoading(false);
+                if (!fromInquiryList) {
+                    setIsShowInquiryNo(true)
+                }
             });
 
 
@@ -200,14 +198,14 @@ const FactoryResponse = ({ navigation, route }) => {
 
     const renderLabel = () => {
         if (selectedItem || isFocus) {
-          return (
-            <Text style={[styles.label, isFocus && { color: Color.inquiryBlue }]}>
-              {String.inquiryNo}
-            </Text>
-          );
+            return (
+                <Text style={[styles.label, isFocus && { color: Color.inquiryBlue }]}>
+                    {String.inquiryNo}
+                </Text>
+            );
         }
         return null;
-      };
+    };
 
 
     return (
@@ -242,16 +240,17 @@ const FactoryResponse = ({ navigation, route }) => {
 
             {/* Toolbar */}
 
-            {loading ?
-                <Loader />
-                : <View style={styles.container}>
 
+            <View style={styles.container}>
+
+                {isShowInquiryNo ?
                     <View style={styles.inquiryNumberLay}>
                         <Text style={styles.inquiryNoTitle}>{String.inquiryNoColon}</Text>
                         <Text style={styles.inquiryNo}>{String.inquiryShortForm + '-' + inquiryId}</Text>
                     </View>
+                    : null}
 
-                    <View style={styles.dropDownContainer}>
+                {isShowDropDown ? <View style={styles.dropDownContainer}>
 
                     {renderLabel()}
                     <SelectDropdown
@@ -259,6 +258,8 @@ const FactoryResponse = ({ navigation, route }) => {
                         defaultButtonText={String.selectInquiryNo}
                         onSelect={(selectedItem, index) => {
                             setSelectedItem(selectedItem)
+                            setInquiryId(selectedItem.id)
+                            getFactoryResponseList(selectedItem.id)
                             console.log(selectedItem, index)
                         }}
                         buttonTextAfterSelection={(selectedItem, index) => {
@@ -281,11 +282,14 @@ const FactoryResponse = ({ navigation, route }) => {
                         dropdownIconPosition={'right'}
                         renderCustomizedButtonChild={(selectedItem, index) => {
                             return (
-                              <View style={styles.dropdown3BtnChildStyle}>
-                                <Text style={styles.dropdown3BtnTxt}>{selectedItem ? selectedItem.title : String.selectInquiryNo}</Text>
-                              </View>
+                                <View style={styles.dropdown3BtnChildStyle}>
+                                    <Text style={{
+                                        color: selectedItem ? Color.black : Color.hintColor,
+                                        textAlign: 'left', fontSize: 12, fontFamily: Fontfamily.poppinsMedium
+                                    }}>{selectedItem ? selectedItem.title : String.selectInquiryNo}</Text>
+                                </View>
                             );
-                          }}
+                        }}
                         dropdownStyle={styles.dropdownDropdownStyle}
                         rowStyle={styles.dropdownRowStyle}
                         rowTextStyle={styles.dropdownRowTxtStyle}
@@ -294,15 +298,17 @@ const FactoryResponse = ({ navigation, route }) => {
 
                         renderCustomizedRowChild={(item, index) => {
                             return (
-                              <View style={styles.dropdown3RowChildStyle}>
-                                <Text style={styles.dropdown3RowTxt}>{item.title}</Text>
-                              </View>
+                                <View style={styles.dropdown3RowChildStyle}>
+                                    <Text style={styles.dropdown3RowTxt}>{item.title}</Text>
+                                </View>
                             );
-                          }}
+                        }}
                     />
-                    </View>
+                </View> : null}
 
-                    <FlatList
+                {loading ?
+                    <Loader />
+                    : <FlatList
                         data={Data}
                         keyExtractor={item => item.id}
                         renderItem={({ item, index }) => {
@@ -312,10 +318,9 @@ const FactoryResponse = ({ navigation, route }) => {
                         contentContainerStyle={styles.contentContainerStyle}
                         ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
                     />
+                }
 
-                </View>
-            }
-
+            </View>
 
 
 
@@ -474,37 +479,37 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         fontSize: 12,
         fontFamily: Fontfamily.poppinsRegular
-      },
-      dropDownContainer: {
+    },
+    dropDownContainer: {
         backgroundColor: 'white',
         padding: 16,
         marginTop: 8
-      },
-      dropdown3RowChildStyle: {
+    },
+    dropdown3RowChildStyle: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingHorizontal: 12,
-      },
-      dropdown3RowTxt: {
+    },
+    dropdown3RowTxt: {
         color: Color.black,
         textAlign: 'left',
         fontSize: 12,
         marginHorizontal: 12,
         fontFamily: Fontfamily.poppinsRegular
-      },
-      dropdown3BtnChildStyle: {
+    },
+    dropdown3BtnChildStyle: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 5,
-      },
-      dropdown3BtnTxt: {
-        color: Color.black,
+    },
+    dropdown3BtnTxt: {
+        color: Color.hintColor,
         textAlign: 'left',
         fontSize: 12,
         fontFamily: Fontfamily.poppinsMedium
-      },
+    },
 })
