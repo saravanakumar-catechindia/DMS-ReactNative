@@ -13,6 +13,7 @@ import Modal from '../utils/Model';
 import { apidecrypt, apiencrypt, validateEmail, showAlertOrToast } from '../utils/Helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const LoginScreen = ({ navigation }) => {
 
     const [email, setEmail] = useState('')

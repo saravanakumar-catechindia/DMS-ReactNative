@@ -20,9 +20,10 @@ const InquiryDetails = ({ navigation, route }) => {
 
     useEffect(() => {
 
-        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
-            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+            backHandler.remove();
+            //BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
         };
     }, [])
 

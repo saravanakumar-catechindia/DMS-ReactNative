@@ -35,11 +35,13 @@ const ViewInquiryScreen = ({ navigation, route }) => {
     useEffect(() => {
         getInquiryList()
 
-        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-        return () => {
-            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
-        };
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+         return () => {
+            backHandler.remove();
+           //  BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+         };
 
+        //return () => backHandler.remove()
     }, [])
 
     function handleBackButtonClick() {
@@ -113,6 +115,22 @@ const ViewInquiryScreen = ({ navigation, route }) => {
         })
     }
 
+    const selectFactory = async (id) => {
+        navigation.navigate('SelectFactory', {
+            name: 'SelectFactory',
+            id: id,
+            token: token
+        })
+    }
+
+    const inquirySentTo = async (id) => {
+        navigation.navigate('InquirySentTo', {
+            name: 'InquirySentTo',
+            id: id,
+            token: token
+        })
+    }
+
     const renderListItem = ({ item, index }) => (
 
         <View style={styles.listContainer} key={item.id}>
@@ -144,22 +162,22 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_eye_gray.png')} />
                     </TouchableOpacity>
-                    <View style={styles.veticalLine}></View>
+                    <View style={styles.verticalLine}></View>
                     <TouchableOpacity onPress={() => viewFactoryResponse(item.id)}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_factory_response_gray.png')} />
                     </TouchableOpacity>
-                    <View style={styles.veticalLine}></View>
-                    <TouchableOpacity>
+                    <View style={styles.verticalLine}></View>
+                    <TouchableOpacity onPress={() => selectFactory(item.id)}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_select_supplier.png')} />
                     </TouchableOpacity>
-                    <View style={styles.veticalLine}></View>
-                    <TouchableOpacity>
+                    <View style={styles.verticalLine}></View>
+                    <TouchableOpacity onPress={() => inquirySentTo(item.id)}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_inquiry_sent_to.png')} />
                     </TouchableOpacity>
-                    <View style={styles.veticalLine}></View>
+                    <View style={styles.verticalLine}></View>
                     <TouchableOpacity>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_delete_gray.png')} />
@@ -309,7 +327,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginBottom: 8
     },
-    veticalLine: {
+    verticalLine: {
         width: 0.5,
         backgroundColor: Color.gIBox
     },

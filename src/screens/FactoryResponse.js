@@ -17,10 +17,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
 
+
+
 const FactoryResponse = ({ navigation, route }) => {
     const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 35 : 0;
-
-    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
 
 
     const DATA = [
@@ -37,6 +37,7 @@ const FactoryResponse = ({ navigation, route }) => {
     const [userId, setUserId] = useState(route.params.userId)
     const [companyId, setCompanyId] = useState(route.params.companyId)
     const [workspaceId, setWorkspaceId] = useState(route.params.workspaceId)
+    const [factoryId, setFactoryId] = useState('')
     const [isFocus, setIsFocus] = useState(false)
     const [selectedItem, setSelectedItem] = useState('')
     const data1 = []
@@ -44,26 +45,36 @@ const FactoryResponse = ({ navigation, route }) => {
 
     const upArrow = require('../assets/image/ic_drop_down_up.png')
     const downArrow = require('../assets/image/ic_drop_down_down.png')
+    const [isModalVisible, setModalVisible] = useState(false)
+    const [isPoGenerated, setIsPoGenerated] = useState(false)
+   
+
+
 
 
     useEffect(() => {
         if (fromInquiryList) {
-            getInquuiryList()
+            getInquiryList()
         } else {
             getFactoryResponseList(inquiryId)
         }
-        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+
+
         return () => {
-            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+            backHandler.remove()
+            //BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
         };
     }, [])
 
-    function handleBackButtonClick() {
+    const handleBackButtonClick = () => {
+        setModalVisible(false)
         navigation.goBack();
         return true;
     }
 
-    const getInquuiryList = () => {
+
+    const getInquiryList = () => {
 
         setLoading(true);
 
@@ -121,6 +132,15 @@ const FactoryResponse = ({ navigation, route }) => {
         setDropDownValues((prevState) => [...prevState, newValue]);
     };
 
+    const handleModal = () => {
+        setModalVisible(!isModalVisible)
+    }
+
+    const generatePoClicked = (factoryId) => {
+        setFactoryId(factoryId)
+        handleModal()
+    }
+
     const getFactoryResponseList = (inquiryId) => {
 
         setLoading(true);
@@ -142,6 +162,11 @@ const FactoryResponse = ({ navigation, route }) => {
                 let data = apidecrypt(response.data);
 
                 if (data.hasOwnProperty('data')) {
+                    data.data.map((item) => {
+                        if (item.is_po_generated == 1) {
+                            setIsPoGenerated(true)
+                        }
+                    });
                     setData(data.data)
                 }
 
@@ -155,13 +180,53 @@ const FactoryResponse = ({ navigation, route }) => {
                     setIsShowInquiryNo(true)
                 }
             });
+    }
+
+    const generatePO = () => {
+
+        handleModal()
+        setLoading(true);
+
+        axios.post('generate-po', apiencrypt({
+            inquiry_id: inquiryId,
+            company_id: companyId,
+            factory_id: factoryId,
+            workspace_id: workspaceId
+        }), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then((response) => {
+                console.log('response', response.data)
+
+                let data = apidecrypt(response.data);
+
+                console.log(data)
 
 
+                if (data.status_code == 200) {
+                    getFactoryResponseList(inquiryId)
+                    showAlertOrToast(String.poGeneratedSuccessfully)
+                }
+
+            })
+            .catch((error) => {
+                showAlertOrToast(error.toString())
+            }).then(function () {
+                // always executed
+                setLoading(false);
+                if (!fromInquiryList) {
+                    setIsShowInquiryNo(true)
+                }
+            });
     }
 
     const renderListItem = ({ item, index }) => (
 
-        <View style={styles.listContainer} key={item.id}>
+        <Card style={styles.cardView}>
+        <View style={styles.listContainer} key={item.inquiry_id}>
 
 
             <View style={styles.itemContainer} >
@@ -181,18 +246,20 @@ const FactoryResponse = ({ navigation, route }) => {
 
             <View style={styles.itemContainerLast} >
                 <Text style={styles.itemContent}>{item.contact_number}</Text>
-                <Text style={styles.itemPrice}>{String.indianRupeeSymbol + ' ' + item.price}</Text>
+                <Text style={styles.itemPrice}>{item.price}</Text>
             </View>
 
 
-            <View style={styles.itemPOContainerLast} >
+            {isShowDropDown ? null :  <TouchableOpacity style={styles.itemPOContainerLast} disabled={isPoGenerated} onPress={() => generatePoClicked(item.factory_contact_id)}>
                 <Text style={styles.itemPOTitle}>{String.generatePurchaseOrder}</Text>
                 <Image style={styles.poImage}
-                    source={require('../assets/image/ic_generate_po_gray.png')}>
+                    source={item.is_po_generated == 1 ? require('../assets/image/ic_generate_purchase_order_blue.png') : require('../assets/image/ic_generate_po_gray.png')}>
                 </Image>
-            </View>
+            </TouchableOpacity>
+            }
 
         </View>
+        </Card>
     );
 
 
@@ -325,6 +392,47 @@ const FactoryResponse = ({ navigation, route }) => {
 
 
 
+            {/* Modal Popup  lay*/}
+            <Modal isVisible={isModalVisible}>
+                <Modal.Container>
+                    <Modal.Header style={{ alignItems: 'center' }}>
+                        <Image style={styles.modelHeaderImage}
+                            source={require('../assets/image/ic_info_light_sandal.png')}>
+                        </Image>
+
+                    </Modal.Header>
+                    <Modal.Body>
+                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center', marginLeft: 10 }}>
+                            <Text style={{
+                                color: Color.black, fontSize: 16, textAlign: 'center',
+                                fontFamily: Fontfamily.poppinsMedium
+                            }} >{String.doYouWantToGenerateThePurchaseOrder}
+                            </Text>
+                        </View>
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <View style={{ width: wp('80%'), height: 50, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginTop: 4, marginBottom: 8 }}>
+                            <TouchableOpacity style={{
+                                width: ('48%'), height: 45, backgroundColor: Color.inquiryBlueLight, alignItems: 'center', justifyContent: 'center',
+                                borderRadius: 24
+                            }} onPress={() => handleModal()}>
+                                <Text style={{ color: Color.inquiryBlue, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.cancel}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{
+                                width: ('48%'), height: 45, backgroundColor: Color.inquiryBlue, alignItems: 'center', justifyContent: 'center',
+                                borderRadius: 24
+                            }} onPress={() => generatePO()}>
+                                <Text style={{ color: Color.white, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.ok}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Modal.Footer>
+                </Modal.Container>
+            </Modal>
+            {/* Modal Popup  lay*/}
+
+
+
         </View>
     );
 
@@ -396,7 +504,7 @@ const styles = StyleSheet.create({
         fontFamily: Fontfamily.poppinsMedium
     },
     itemSeperator: {
-        height: 7
+        height: 10
     },
     contentContainerStyle: {
         paddingTop: 5
@@ -512,4 +620,18 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontFamily: Fontfamily.poppinsMedium
     },
+    modelHeaderImage: {
+        width: 54,
+        height: 54,
+        marginTop: 20,
+        marginBottom: 10
+    },
+    cardView: {
+        backgroundColor: 'white',
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        shadowOpacity: 0.25
+    }
 })

@@ -67,5 +67,9 @@ export default {
     inquiryTextGray: '#888888',
     inquiryPrice: '#EF6262',
     gray1: '#E9E9E9',
-    hintColor: '#727272'
+    hintColor: '#727272',
+    inquiryBlueLight: '#d4e4f7',
+    gray2: '#7B7B7B',
+    bottomBorder: '#F8F8F9',
+    homeBox1: '#f0f1f5',
 }

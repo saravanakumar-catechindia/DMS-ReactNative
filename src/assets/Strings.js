@@ -41,5 +41,12 @@ export default {
     generatePurchaseOrder: 'Generate Purchase Order',
     inquiryShortForm: 'IN',
     indianRupeeSymbol: '\u20B9',
-    selectInquiryNo: 'Select Inquiry No'
+    selectInquiryNo: 'Select Inquiry No',
+    doYouWantToGenerateThePurchaseOrder: 'Do you want to generate the Purchase Order?',
+    poGeneratedSuccessfully: 'PO Generated Successfully',
+    selectFactory: 'Select Factory',
+    contactPerson: 'Contact Person',
+    contactNumber: 'Contact Number',
+    emailColon: 'Email : ',
+    inquirySentTo: 'Inquiry Sent To'
 }

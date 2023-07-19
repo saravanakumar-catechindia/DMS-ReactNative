@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
+    "@react-native-community/checkbox": "^0.5.16",
     "@react-native-community/cli-platform-android": "^11.3.5",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
@@ -20,7 +21,7 @@
     "react-native": "^0.72.1",
     "react-native-blob-util": "^0.18.3",
     "react-native-gradle-plugin": "^0.71.19",
-    "react-native-modal": "^12.1.0",
+    "react-native-modal": "^13.0.1",
     "react-native-otp-textinput": "^1.0.1",
     "react-native-paper": "^5.8.0",
     "react-native-pdf": "^6.7.1",

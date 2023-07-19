@@ -7,6 +7,8 @@ import HomeScreen from '../screens/HomeScreen';
 import ViewInquiryScreen from '../screens/ViewInquiryScreen';
 import InquiryDetails from '../screens/InquiryDetails';
 import FactoryResponse from '../screens/FactoryResponse';
+import SelectFactory from '../screens/SelectFactory';
+import InquirySentTo from '../screens/InquirySentTo';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -53,13 +55,24 @@ const App = () => {
           component={InquiryDetails}
           options={{ headerShown: false }}
         />
-        
+
         <Stack.Screen
           name="FactoryResponse"
           component={FactoryResponse}
           options={{ headerShown: false }}
         />
 
+        <Stack.Screen
+          name="SelectFactory"
+          component={SelectFactory}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="InquirySentTo"
+          component={InquirySentTo}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
