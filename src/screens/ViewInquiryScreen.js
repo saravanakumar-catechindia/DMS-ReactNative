@@ -96,6 +96,58 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
     }
 
+
+    const getSelectFactoryList = (inquiryId) => {
+
+        setLoading(true);
+
+        axios.post('get-inquiry-factory', apiencrypt(), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then((response) => {
+
+
+                let data = apidecrypt(response.data)
+
+                if (data.hasOwnProperty('data')) {
+
+                    const updatedData = data.data.map((itemData) => {
+
+                        return {
+                            id: itemData.id,
+                            factory: itemData.factory,
+                            contact_person: itemData.contact_person,
+                            contact_number: itemData.contact_number,
+                            contact_email: itemData.contact_email,
+                            isSelected: false,
+                            isNowSelected: false
+                        };
+
+                    });
+
+
+                    try {
+                          selectFactory(inquiryId, updatedData)
+                    } catch(e) {
+                        console.log('saving error ' + e);
+                    }
+                    
+
+                }
+
+            })
+            .catch((error) => {
+                console.log('catch error ', error.toString())
+                showAlertOrToast(error.toString())
+            }).then(function () {
+                // always executed
+                setLoading(false);
+            });
+    }
+
     const viewInquiryDetails = async (id) => {
         navigation.navigate('InquiryDetails', {
             name: 'InquiryDetails',
@@ -115,11 +167,12 @@ const ViewInquiryScreen = ({ navigation, route }) => {
         })
     }
 
-    const selectFactory = async (id) => {
+    const selectFactory = async (id, data) => {
         navigation.navigate('SelectFactory', {
             name: 'SelectFactory',
             id: id,
-            token: token
+            token: token,
+            data: data
         })
     }
 
@@ -168,7 +221,7 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                             source={require('../assets/image/ic_factory_response_gray.png')} />
                     </TouchableOpacity>
                     <View style={styles.verticalLine}></View>
-                    <TouchableOpacity onPress={() => selectFactory(item.id)}>
+                    <TouchableOpacity onPress={() => getSelectFactoryList(item.id)}>
                         <Image style={styles.menuIcon}
                             source={require('../assets/image/ic_select_supplier.png')} />
                     </TouchableOpacity>

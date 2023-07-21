@@ -17,18 +17,21 @@ const SelectFactory = ({ navigation, route }) => {
 
 
     const [Data, setData] = useState([]);
-    const [selectedFactoryData, setSelectedFactoryData] = useState([])
+    const [selectedFactoryData, setSelectedFactoryData] = useState(route.params.data)
     const [inquiryId, setInquiryId] = useState(route.params.id)
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState(route.params.token);
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
-
+    
+        
 
 
     useEffect(() => {
 
-        //  getSelectedFactoryList()
-        getFactoryList()
+
+
+       getSelectedFactoryList()
+
         const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
             backHandler.remove()
@@ -39,6 +42,76 @@ const SelectFactory = ({ navigation, route }) => {
         navigation.goBack();
         return true;
     }
+
+
+    const updateCheckBox = (newValue, item, index) => {
+        let tempArray = [...selectedFactoryData]
+        tempArray[index].isNowSelected = newValue
+        setSelectedFactoryData(tempArray)
+
+
+        console.log('setSelectedFactoryData updateCheckBox', selectedFactoryData)
+    }
+    
+
+
+    const getFactoryList = () => {
+
+        setLoading(true);
+
+
+
+        axios.post('get-inquiry-factory', apiencrypt(), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then((response) => {
+               // console.log('response', response.data)
+
+             //   console.log(apidecrypt(response.data))
+
+                let data = apidecrypt(response.data)
+
+                if (data.hasOwnProperty('data')) {
+                    setData(data.data)
+
+                    const updatedData = data.data.map((itemData) => {
+
+                        return {
+                            id: itemData.id,
+                            factory: itemData.factory,
+                            contact_person: itemData.contact_person,
+                            contact_number: itemData.contact_number,
+                            contact_email: itemData.contact_email,
+                            isSelected: false,
+                            isNowSelected: false
+                        };
+
+                    });
+
+                    setSelectedFactoryData(updatedData)
+
+                    try {
+                          getSelectedFactoryList()
+                    } catch(e) {
+                        console.log('saving error ' + e);
+                    }
+                    
+
+                }
+
+            })
+            .catch((error) => {
+                console.log('catch error ', error.toString())
+                showAlertOrToast(error.toString())
+            }).then(function () {
+                // always executed
+                setLoading(false);
+            });
+    }
+
 
 
     const getSelectedFactoryList = () => {
@@ -60,16 +133,81 @@ const SelectFactory = ({ navigation, route }) => {
 
                 let data = apidecrypt(response.data);
 
+
                 if (data.hasOwnProperty('data')) {
-                    if (data.hasOwnProperty('data')) {
 
-                       // let inData = [...dropDownValues]
-                       data.data.map((item) => {
 
-                           // inData.push({ title: String.inquiryShortForm + '-' + item.id, id: item.id })
+                
+                    var sFData = [...selectedFactoryData] 
+
+                    console.log('SelectedFactoryData updatedData 12 Data ', sFData)
+
+                    let updatedData = selectedFactoryData.map((itemData) => {
+
+
+                        var updatedObject = {}
+                        
+                        data.data.map((itemSelected) => {
+
+                            if (itemData.id == itemSelected.id) {
+                             
+                                updatedObject = {
+                                    id: itemData.id,
+                                    factory: itemData.factory,
+                                    contact_person: itemData.contact_person,
+                                    contact_number: itemData.contact_number,
+                                    contact_email: itemData.contact_email,
+                                    isSelected: true,
+                                    isNowSelected: true
+                                }
+
+                                sFData.push(updatedObject)
+                              
+                            }
+
+
                         });
-                    }
+
+
+                        if (Object.keys(updatedObject).length === 0) {
+
+                            updatedObject = {
+                                id: itemData.id,
+                                factory: itemData.factory,
+                                contact_person: itemData.contact_person,
+                                contact_number: itemData.contact_number,
+                                contact_email: itemData.contact_email,
+                                isSelected: false,
+                                isNowSelected: false
+                            }
+
+                            sFData.push(updatedObject)
+                        }
+
+
+
+                        console.log('SelectedFactoryData updatedData 12 ', sFData)
+
+                        return updatedObject;
+
+                    });
+
+                
+
+                //  sFData.push(updatedData)
+                
+                  setSelectedFactoryData(updatedData)
+
+//                  setSelectedFactoryData(sFData)
+
+                  
+
+                    console.log('SelectedFactoryData updatedData 12 ', selectedFactoryData)
                 }
+
+
+            
+
 
             })
             .catch((error) => {
@@ -83,89 +221,63 @@ const SelectFactory = ({ navigation, route }) => {
 
     }
 
-    const getFactoryList = () => {
 
-        setLoading(true);
+   
 
-
-
-        axios.post('get-inquiry-factory', apiencrypt(), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-        })
-            .then((response) => {
-                console.log('response', response.data)
-
-                console.log(apidecrypt(response.data))
-
-                let data = apidecrypt(response.data)
-
-                if (data.hasOwnProperty('data')) {
-                    setData(data.data)
-                }
-
-            })
-            .catch((error) => {
-                console.log('catch error ', error.toString())
-                showAlertOrToast(error.toString())
-            }).then(function () {
-                // always executed
-                setLoading(false);
-            });
-    }
+    
 
 
     const renderListItem = ({ item, index }) => (
 
         <Card style={styles.cardView}>
-        <View style={styles.listContainer} key={item.inquiry_id}>
+            <View style={styles.listContainer} key={item.inquiry_id}>
 
 
-            <View style={styles.itemContainer} >
-                <View>
-                    <Text style={styles.itemTitle}>{String.factory}</Text>
-                    <Text style={styles.itemContent}>{item.factory}</Text>
+                <View style={styles.itemContainer} >
+                    <View>
+                        <Text style={styles.itemTitle}>{String.factory}</Text>
+                        <Text style={styles.itemContent}>{item.factory}</Text>
+                    </View>
+
+                    <View style={{ width: 1, backgroundColor: Color.homeBox1 }}></View>
+
+                    <View>
+                        <Text style={styles.itemTitle}>{String.contactPerson}</Text>
+                        <Text style={styles.itemContent}>{item.contact_person}</Text>
+                    </View>
+
+                    <View style={{ width: 1, backgroundColor: Color.homeBox1 }}></View>
+
+                    <View>
+                        <Text style={styles.itemTitle}>{String.contactNumber}</Text>
+                        <Text style={styles.itemContent}>{item.contact_number}</Text>
+                    </View>
                 </View>
 
-                <View style={{ width: 1, backgroundColor: Color.homeBox1 }}></View>
 
-                <View>
-                    <Text style={styles.itemTitle}>{String.contactPerson}</Text>
-                    <Text style={styles.itemContent}>{item.contact_person}</Text>
+                <View style={{ width: ('100%'), height: 1, backgroundColor: Color.homeBox1 }}></View>
+
+                <View style={styles.itemEmailContainer} >
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.itemEmailTitle}>{String.emailColon}</Text>
+                        <Text style={styles.itemEmailContent}>{item.contact_email}</Text>
+                    </View>
+
+
+                    <CheckBox
+                        disabled={item.isSelected}
+                        value={item.isNowSelected}
+                        onValueChange={(newValue) => updateCheckBox(newValue, item, index)}
+                        boxType={'square'}
+                        onAnimationType={'bounce'}
+                        offAnimationType={'stroke'}
+                        style={styles.checkBox}
+                        tintColors={{true: Color.inquiryBlue}}
+                    />
                 </View>
 
-                <View style={{ width: 1, backgroundColor: Color.homeBox1 }}></View>
 
-                <View>
-                    <Text style={styles.itemTitle}>{String.contactNumber}</Text>
-                    <Text style={styles.itemContent}>{item.contact_number}</Text>
-                </View>
             </View>
-
-
-            <View style={{ width: ('100%'), height: 1, backgroundColor: Color.homeBox1 }}></View>
-
-            <View style={styles.itemEmailContainer} >
-                <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.itemEmailTitle}>{String.emailColon}</Text>
-                    <Text style={styles.itemEmailContent}>{item.contact_email}</Text>
-                </View>
-
-                <CheckBox
-                    disabled={false}
-                    value={toggleCheckBox}
-                    onValueChange={(newValue) => setToggleCheckBox(newValue)}
-                    boxType={'square'}
-                    onAnimationType={'bounce'}
-                    offAnimationType={'stroke'}
-                    style={styles.checkBox}
-                />
-            </View>
-
-
-        </View>
         </Card>
     );
 
@@ -216,7 +328,7 @@ const SelectFactory = ({ navigation, route }) => {
                 {loading ?
                     <Loader />
                     : <FlatList
-                        data={Data}
+                        data={selectedFactoryData}
                         keyExtractor={item => item.id}
                         renderItem={({ item, index }) => {
                             return renderListItem({ item, index });

@@ -47,7 +47,9 @@ const FactoryResponse = ({ navigation, route }) => {
     const downArrow = require('../assets/image/ic_drop_down_down.png')
     const [isModalVisible, setModalVisible] = useState(false)
     const [isPoGenerated, setIsPoGenerated] = useState(false)
-   
+
+
+        
 
 
 
@@ -226,39 +228,39 @@ const FactoryResponse = ({ navigation, route }) => {
     const renderListItem = ({ item, index }) => (
 
         <Card style={styles.cardView}>
-        <View style={styles.listContainer} key={item.inquiry_id}>
+            <View style={styles.listContainer} key={item.inquiry_id}>
 
 
-            <View style={styles.itemContainer} >
-                <Text style={styles.itemTitle}>{String.factory}</Text>
-                <Text style={styles.itemTitle}>{String.contactName}</Text>
+                <View style={styles.itemContainer} >
+                    <Text style={styles.itemTitle}>{String.factory}</Text>
+                    <Text style={styles.itemTitle}>{String.contactName}</Text>
+                </View>
+
+                <View style={styles.itemContainer} >
+                    <Text style={styles.itemContent}>{item.factory}</Text>
+                    <Text style={styles.itemContent}>{item.contact_person}</Text>
+                </View>
+
+                <View style={styles.itemContainer} >
+                    <Text style={styles.itemTitle}>{String.phoneNumber}</Text>
+                    <Text style={styles.itemTitle}>{String.price}</Text>
+                </View>
+
+                <View style={styles.itemContainerLast} >
+                    <Text style={styles.itemContent}>{item.contact_number}</Text>
+                    <Text style={styles.itemPrice}>{item.price}</Text>
+                </View>
+
+
+                {isShowDropDown ? null : <TouchableOpacity style={styles.itemPOContainerLast} disabled={isPoGenerated} onPress={() => generatePoClicked(item.factory_contact_id)}>
+                    <Text style={styles.itemPOTitle}>{String.generatePurchaseOrder}</Text>
+                    <Image style={styles.poImage}
+                        source={item.is_po_generated == 1 ? require('../assets/image/ic_generate_purchase_order_blue.png') : require('../assets/image/ic_generate_po_gray.png')}>
+                    </Image>
+                </TouchableOpacity>
+                }
+
             </View>
-
-            <View style={styles.itemContainer} >
-                <Text style={styles.itemContent}>{item.factory}</Text>
-                <Text style={styles.itemContent}>{item.contact_person}</Text>
-            </View>
-
-            <View style={styles.itemContainer} >
-                <Text style={styles.itemTitle}>{String.phoneNumber}</Text>
-                <Text style={styles.itemTitle}>{String.price}</Text>
-            </View>
-
-            <View style={styles.itemContainerLast} >
-                <Text style={styles.itemContent}>{item.contact_number}</Text>
-                <Text style={styles.itemPrice}>{item.price}</Text>
-            </View>
-
-
-            {isShowDropDown ? null :  <TouchableOpacity style={styles.itemPOContainerLast} disabled={isPoGenerated} onPress={() => generatePoClicked(item.factory_contact_id)}>
-                <Text style={styles.itemPOTitle}>{String.generatePurchaseOrder}</Text>
-                <Image style={styles.poImage}
-                    source={item.is_po_generated == 1 ? require('../assets/image/ic_generate_purchase_order_blue.png') : require('../assets/image/ic_generate_po_gray.png')}>
-                </Image>
-            </TouchableOpacity>
-            }
-
-        </View>
         </Card>
     );
 
