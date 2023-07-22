@@ -181,27 +181,27 @@ const LoginScreen = ({ navigation }) => {
             <Modal isVisible={isModalVisible}>
                 <Modal.Container>
                     <Modal.Header style={{ alignItems: 'center' }}>
-                        <View style={{ width: wp('80%'), height: 40, backgroundColor: '#fff', justifyContent: 'center', marginTop: 20, marginLeft: 10 }}>
-                            <Text style={{ color: Color.black, fontFamily: Fontfamily.poppinsSemiBold, fontSize: 18, }}>{String.LoginError}</Text>
+                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center' }}>
+                            <Text style={{ color: Color.black, fontFamily: Fontfamily.poppinsMedium, fontSize: 16, }}>{String.LoginError}</Text>
                         </View>
                     </Modal.Header>
                     <Modal.Body>
-                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center', marginLeft: 10 }}>
+                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center' }}>
                             <Text style={{
-                                color: Color.black, fontSize: 14,
-                                fontFamily: Fontfamily.poppinsMedium, marginLeft: 0, marginRight: 10,
+                                color: Color.black, fontSize: 12,
+                                fontFamily: Fontfamily.poppinsRegular
                             }} >{loginError}
                             </Text>
                         </View>
 
                     </Modal.Body>
                     <Modal.Footer>
-                        <View style={{ width: wp('80%'), height: 50, alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row' }}>
+                        <View style={{ width: wp('80%'), alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'row' }}>
                             <TouchableOpacity style={{
                                 width: 60, height: 30, backgroundColor: Color.colorPrimary, alignItems: 'center', justifyContent: 'center',
-                                borderRadius: 10
+                                borderRadius: 24,
                             }} onPress={() => handleModal()}>
-                                <Text style={{ color: Color.white, fontFamily: Fontfamily.poppinsSemiBold, fontSize: 16, }}>{String.ok}</Text>
+                                <Text style={{ color: Color.white, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.ok}</Text>
                             </TouchableOpacity>
                         </View>
                     </Modal.Footer>

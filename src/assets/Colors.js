@@ -72,4 +72,5 @@ export default {
     gray2: '#7B7B7B',
     bottomBorder: '#F8F8F9',
     homeBox1: '#f0f1f5',
+    transparent: '#00000000'
 }

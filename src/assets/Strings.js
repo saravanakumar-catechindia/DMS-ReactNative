@@ -48,5 +48,13 @@ export default {
     contactPerson: 'Contact Person',
     contactNumber: 'Contact Number',
     emailColon: 'Email : ',
-    inquirySentTo: 'Inquiry Sent To'
+    inquirySentTo: 'Inquiry Sent To',
+    addNewFactory: 'Add New Factory',
+    send: 'Send',
+    pleaseSelectAtleastOneFactory: 'Please Select Atleast One Factory',
+    inquirySendSuccessfully: 'Inquiry Sent Successfully',
+    inquiryDeletedSuccessfully: 'Inquiry Deleted Successfully',
+    deleteThisInquiry: 'Do You Want to Delete this Inquiry - {{name}}?',
+    areYouSure: 'Are You Sure?',
+    inquirySortName: 'IN'
 }

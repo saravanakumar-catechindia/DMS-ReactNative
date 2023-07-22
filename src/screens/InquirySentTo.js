@@ -164,6 +164,7 @@ const InquirySentTo = ({ navigation, route }) => {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.contentContainerStyle}
                         ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
+                        showsVerticalScrollIndicator={false}
                     />
                 }
 
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
         backgroundColor: Color.white,
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 6
+        marginBottom: 0
     },
     inquiryNoTitle: {
         color: Color.black,
@@ -246,7 +247,8 @@ const styles = StyleSheet.create({
         height: 12
     },
     contentContainerStyle: {
-        paddingTop: 5
+        paddingTop: 10,
+        paddingBottom: 50
     },
     listContainer: {
         backgroundColor: Color.white,

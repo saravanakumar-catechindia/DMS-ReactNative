@@ -19,18 +19,21 @@ const SelectFactory = ({ navigation, route }) => {
     const [Data, setData] = useState([]);
     const [selectedFactoryData, setSelectedFactoryData] = useState(route.params.data)
     const [inquiryId, setInquiryId] = useState(route.params.id)
+    const [userId, setUserId] = useState(route.params.userId)
+    const [companyId, setCompannyId] = useState(route.params.companyId)
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState(route.params.token);
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
-    
-        
+
+
+
 
 
     useEffect(() => {
 
 
 
-       getSelectedFactoryList()
+        getSelectedFactoryList()
 
         const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
@@ -44,15 +47,11 @@ const SelectFactory = ({ navigation, route }) => {
     }
 
 
-    const updateCheckBox = (newValue, item, index) => {
+    const updateCheckBox = (newValue, index) => {
         let tempArray = [...selectedFactoryData]
         tempArray[index].isNowSelected = newValue
         setSelectedFactoryData(tempArray)
-
-
-        console.log('setSelectedFactoryData updateCheckBox', selectedFactoryData)
     }
-    
 
 
     const getFactoryList = () => {
@@ -68,9 +67,9 @@ const SelectFactory = ({ navigation, route }) => {
             },
         })
             .then((response) => {
-               // console.log('response', response.data)
+                // console.log('response', response.data)
 
-             //   console.log(apidecrypt(response.data))
+                //   console.log(apidecrypt(response.data))
 
                 let data = apidecrypt(response.data)
 
@@ -94,11 +93,11 @@ const SelectFactory = ({ navigation, route }) => {
                     setSelectedFactoryData(updatedData)
 
                     try {
-                          getSelectedFactoryList()
-                    } catch(e) {
+                        getSelectedFactoryList()
+                    } catch (e) {
                         console.log('saving error ' + e);
                     }
-                    
+
 
                 }
 
@@ -111,6 +110,7 @@ const SelectFactory = ({ navigation, route }) => {
                 setLoading(false);
             });
     }
+
 
 
 
@@ -137,20 +137,17 @@ const SelectFactory = ({ navigation, route }) => {
                 if (data.hasOwnProperty('data')) {
 
 
-                
-                    var sFData = [...selectedFactoryData] 
 
-                    console.log('SelectedFactoryData updatedData 12 Data ', sFData)
 
                     let updatedData = selectedFactoryData.map((itemData) => {
 
 
                         var updatedObject = {}
-                        
+
                         data.data.map((itemSelected) => {
 
                             if (itemData.id == itemSelected.id) {
-                             
+
                                 updatedObject = {
                                     id: itemData.id,
                                     factory: itemData.factory,
@@ -161,8 +158,6 @@ const SelectFactory = ({ navigation, route }) => {
                                     isNowSelected: true
                                 }
 
-                                sFData.push(updatedObject)
-                              
                             }
 
 
@@ -181,32 +176,27 @@ const SelectFactory = ({ navigation, route }) => {
                                 isNowSelected: false
                             }
 
-                            sFData.push(updatedObject)
+
                         }
 
-
-
-                        console.log('SelectedFactoryData updatedData 12 ', sFData)
 
                         return updatedObject;
 
                     });
 
-                
 
-                //  sFData.push(updatedData)
-                
-                  setSelectedFactoryData(updatedData)
 
-//                  setSelectedFactoryData(sFData)
 
-                  
+
+                    setSelectedFactoryData(updatedData)
+
+
 
                     console.log('SelectedFactoryData updatedData 12 ', selectedFactoryData)
                 }
 
 
-            
+
 
 
             })
@@ -222,9 +212,60 @@ const SelectFactory = ({ navigation, route }) => {
     }
 
 
-   
+    const sendButtonClick = (index) => {
+        let filteredItem = selectedFactoryData.filter(item => (item.isNowSelected === true && item.isSelected === false))
+        let selectedFactoryIds = filteredItem.map(item => item.id)
+        console.log('Checkbox selected ids ', selectedFactoryIds)
 
-    
+        if (selectedFactoryIds.length > 0) {
+            sendSelectedFactoryIds(selectedFactoryIds)
+        } else {
+            showAlertOrToast(String.pleaseSelectAtleastOneFactory)
+        }
+    }
+
+    const addNewFactoryButtonClick = () => {
+
+    }
+
+    const sendSelectedFactoryIds = (selectedFactoryIds) => {
+
+        setLoading(true);
+
+        axios.post('send-inquiry', apiencrypt({
+            inquiry_id: inquiryId,
+            company_id: companyId,
+            user_id: userId,
+            factory_id: selectedFactoryIds
+        }), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then((response) => {
+                console.log('response', response.data)
+
+                console.log(apidecrypt(response.data))
+
+                let data = apidecrypt(response.data);
+
+                if (data.status_code == 200) {
+                    showAlertOrToast(String.inquirySendSuccessfully)
+                    getSelectedFactoryList()
+                }
+            })
+            .catch((error) => {
+                showAlertOrToast(error.toString())
+            }).then(function () {
+                // always executed
+                setLoading(false);
+
+            });
+
+    }
+
+
 
 
     const renderListItem = ({ item, index }) => (
@@ -257,8 +298,8 @@ const SelectFactory = ({ navigation, route }) => {
 
                 <View style={{ width: ('100%'), height: 1, backgroundColor: Color.homeBox1 }}></View>
 
-                <View style={styles.itemEmailContainer} >
-                    <View style={{ flexDirection: 'row' }}>
+                <View style={styles.itemEmailCheckBoxContainer} >
+                    <View style={styles.itemEmailInnerContainer}>
                         <Text style={styles.itemEmailTitle}>{String.emailColon}</Text>
                         <Text style={styles.itemEmailContent}>{item.contact_email}</Text>
                     </View>
@@ -267,12 +308,12 @@ const SelectFactory = ({ navigation, route }) => {
                     <CheckBox
                         disabled={item.isSelected}
                         value={item.isNowSelected}
-                        onValueChange={(newValue) => updateCheckBox(newValue, item, index)}
+                        onValueChange={(newValue) => updateCheckBox(newValue, index)}
                         boxType={'square'}
                         onAnimationType={'bounce'}
                         offAnimationType={'stroke'}
                         style={styles.checkBox}
-                        tintColors={{true: Color.inquiryBlue}}
+                        tintColors={{ true: Color.inquiryBlue }}
                     />
                 </View>
 
@@ -336,7 +377,18 @@ const SelectFactory = ({ navigation, route }) => {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.contentContainerStyle}
                         ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
+                        showsVerticalScrollIndicator={false}
                     />
+                }
+
+                {loading ? null : <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.addNewFactoryButton} onPress={() => addNewFactoryButtonClick()}>
+                        <Text style={styles.buttonText}>{String.addNewFactory}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.sendButton} onPress={() => sendButtonClick()}>
+                        <Text style={styles.buttonText}>{String.send}</Text>
+                    </TouchableOpacity>
+                </View>
                 }
 
             </View>
@@ -404,7 +456,7 @@ const styles = StyleSheet.create({
         backgroundColor: Color.white,
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 6
+        marginBottom: 0
     },
     inquiryNoTitle: {
         color: Color.black,
@@ -421,7 +473,8 @@ const styles = StyleSheet.create({
         height: 12
     },
     contentContainerStyle: {
-        paddingTop: 5
+        paddingTop: 10,
+        paddingBottom: 80
     },
     listContainer: {
         backgroundColor: Color.white,
@@ -448,12 +501,15 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         textAlign: 'center'
     },
-    itemEmailContainer: {
+    itemEmailCheckBoxContainer: {
         justifyContent: 'space-between',
         flexDirection: 'row',
         backgroundColor: Color.bottomBorder,
         paddingTop: 8,
         paddingBottom: 8
+    },
+    itemEmailInnerContainer: {
+        flexDirection: 'row'
     },
     itemEmailTitle: {
         color: Color.inquiryTextGray,
@@ -482,4 +538,38 @@ const styles = StyleSheet.create({
         paddingRight: 0,
         shadowOpacity: 0.1
     },
+    buttonContainer: {
+        width: wp('100%'),
+        flexDirection: 'row',
+        justifyContent: 'center',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 20
+    },
+    addNewFactoryButton: {
+        height: 45,
+        backgroundColor: Color.inquiryBlue,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 24,
+        marginRight: 10,
+        paddingStart: 24,
+        paddingEnd: 24
+    },
+    sendButton: {
+        width: 125,
+        height: 45,
+        backgroundColor: Color.inquiryBlue,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 24,
+        marginLeft: 10,
+        paddingStart: 24,
+        paddingEnd: 24
+    },
+    buttonText: {
+        color: Color.white,
+        fontFamily: Fontfamily.poppinsMedium,
+        fontSize: 12
+    }
 })

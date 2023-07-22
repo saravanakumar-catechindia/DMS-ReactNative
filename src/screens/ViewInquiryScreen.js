@@ -30,18 +30,18 @@ const ViewInquiryScreen = ({ navigation, route }) => {
     const [token, setToken] = useState(route.params.token);
     const [loading, setLoading] = useState(false);
     const [encryptedText, setEnctyptedText] = useState('');
+    const [isModalVisible, setModalVisible] = useState(false)
+    const [inquiryId, setInquiryId] = useState('')
 
 
     useEffect(() => {
         getInquiryList()
 
         const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-         return () => {
+        return () => {
             backHandler.remove();
-           //  BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
-         };
+        };
 
-        //return () => backHandler.remove()
     }, [])
 
     function handleBackButtonClick() {
@@ -52,6 +52,50 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
     }
 
+    const handleModal = () => {
+        setModalVisible(!isModalVisible)
+    }
+
+    const deleteIconClicked = (inquiryId) => {
+        setInquiryId(inquiryId)
+        handleModal()
+    }
+
+    const deleteInquiry = () => {
+
+        handleModal()
+        setLoading(true);
+
+        axios.post('delete-inquiry', apiencrypt({
+            inquiry_id: inquiryId,
+            company_id: companyId
+        }), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then((response) => {
+                console.log('response', response.data)
+
+                let data = apidecrypt(response.data);
+
+                console.log(data)
+
+
+                if (data.status_code == 200) {
+                    showAlertOrToast(String.inquiryDeletedSuccessfully)
+                    getInquiryList()
+                }
+
+            })
+            .catch((error) => {
+                showAlertOrToast(error.toString())
+            }).then(function () {
+                // always executed
+                setLoading(false);
+            });
+    }
 
     const getInquiryList = () => {
 
@@ -130,11 +174,11 @@ const ViewInquiryScreen = ({ navigation, route }) => {
 
 
                     try {
-                          selectFactory(inquiryId, updatedData)
-                    } catch(e) {
+                        selectFactory(inquiryId, updatedData)
+                    } catch (e) {
                         console.log('saving error ' + e);
                     }
-                    
+
 
                 }
 
@@ -172,6 +216,8 @@ const ViewInquiryScreen = ({ navigation, route }) => {
             name: 'SelectFactory',
             id: id,
             token: token,
+            userId: userId,
+            companyId: companyId,
             data: data
         })
     }
@@ -221,8 +267,15 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                             source={require('../assets/image/ic_factory_response_gray.png')} />
                     </TouchableOpacity>
                     <View style={styles.verticalLine}></View>
-                    <TouchableOpacity onPress={() => getSelectFactoryList(item.id)}>
-                        <Image style={styles.menuIcon}
+                    <TouchableOpacity disabled={item.is_po_generated == 1} onPress={() => getSelectFactoryList(item.id)}>
+                        <Image style={{
+                            width: 20,
+                            height: 20,
+                            resizeMode: 'contain',
+                            marginTop: 8,
+                            marginBottom: 8,
+                            opacity: item.is_po_generated == 1 ? 0.5 : 1
+                        }}
                             source={require('../assets/image/ic_select_supplier.png')} />
                     </TouchableOpacity>
                     <View style={styles.verticalLine}></View>
@@ -231,8 +284,15 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                             source={require('../assets/image/ic_inquiry_sent_to.png')} />
                     </TouchableOpacity>
                     <View style={styles.verticalLine}></View>
-                    <TouchableOpacity>
-                        <Image style={styles.menuIcon}
+                    <TouchableOpacity disabled={item.is_po_generated == 1} onPress={() => deleteIconClicked(item.id)}>
+                        <Image style={{
+                            width: 20,
+                            height: 20,
+                            resizeMode: 'contain',
+                            marginTop: 8,
+                            marginBottom: 8,
+                            opacity: item.is_po_generated == 1 ? 0.5 : 1
+                        }}
                             source={require('../assets/image/ic_delete_gray.png')} />
                     </TouchableOpacity>
 
@@ -289,8 +349,55 @@ const ViewInquiryScreen = ({ navigation, route }) => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.contentContainerStyle}
                     ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
+                    showsVerticalScrollIndicator={false}
                 />
             }
+
+
+            {/* Modal  Delete Popup  lay*/}
+            <Modal isVisible={isModalVisible}>
+                <Modal.Container>
+                    <Modal.Header style={{ alignItems: 'center' }}>
+                        <Image style={styles.modelHeaderImage}
+                            source={require('../assets/image/ic_info_light_sandal.png')}>
+                        </Image>
+
+                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', marginTop: 12 }}>
+                            <Text style={{ color: Color.black, fontFamily: Fontfamily.poppinsMedium, fontSize: 16, }}>{String.areYouSure}</Text>
+                        </View>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center' }}>
+                            <Text style={{
+                                color: Color.black, fontSize: 12, textAlign: 'center',
+                                fontFamily: Fontfamily.poppinsRegular
+                            }} >{String.deleteThisInquiry.replace(
+                                "{{name}}",
+                                String.inquiryShortForm + "-" + inquiryId
+                            )}
+                            </Text>
+                        </View>
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <View style={{ width: wp('80%'), alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+                            <TouchableOpacity style={{
+                                width: wp('38%'), height: 45, backgroundColor: Color.inquiryBlueLight, alignItems: 'center', justifyContent: 'center',
+                                borderRadius: 24
+                            }} onPress={() => handleModal()}>
+                                <Text style={{ color: Color.inquiryBlue, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.cancel}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{
+                                width: wp('38%'), height: 45, backgroundColor: Color.inquiryBlue, alignItems: 'center', justifyContent: 'center',
+                                borderRadius: 24
+                            }} onPress={() => deleteInquiry()}>
+                                <Text style={{ color: Color.white, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.ok}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Modal.Footer>
+                </Modal.Container>
+            </Modal>
+            {/* Modal Delete Popup  lay*/}
 
         </View>
 
@@ -352,7 +459,7 @@ const styles = StyleSheet.create({
     },
     contentContainerStyle: {
         paddingTop: 10,
-        paddingBottom: 10
+        paddingBottom: 20
     },
     itemGrayContainer: {
         justifyContent: 'space-between',
@@ -414,5 +521,9 @@ const styles = StyleSheet.create({
         paddingLeft: 0,
         paddingRight: 0
 
+    },
+    modelHeaderImage: {
+        width: 54,
+        height: 54
     },
 })

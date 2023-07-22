@@ -17,8 +17,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
 
-
-
 const FactoryResponse = ({ navigation, route }) => {
     const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 35 : 0;
 
@@ -386,6 +384,7 @@ const FactoryResponse = ({ navigation, route }) => {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.contentContainerStyle}
                         ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
+                        showsVerticalScrollIndicator={false}
                     />
                 }
 
@@ -404,7 +403,7 @@ const FactoryResponse = ({ navigation, route }) => {
 
                     </Modal.Header>
                     <Modal.Body>
-                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center', marginLeft: 10 }}>
+                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center' }}>
                             <Text style={{
                                 color: Color.black, fontSize: 16, textAlign: 'center',
                                 fontFamily: Fontfamily.poppinsMedium
@@ -414,15 +413,15 @@ const FactoryResponse = ({ navigation, route }) => {
 
                     </Modal.Body>
                     <Modal.Footer>
-                        <View style={{ width: wp('80%'), height: 50, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginTop: 4, marginBottom: 8 }}>
+                        <View style={{ width: wp('80%'), alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row'}}>
                             <TouchableOpacity style={{
-                                width: ('48%'), height: 45, backgroundColor: Color.inquiryBlueLight, alignItems: 'center', justifyContent: 'center',
+                                width: wp('38%'), height: 45, backgroundColor: Color.inquiryBlueLight, alignItems: 'center', justifyContent: 'center',
                                 borderRadius: 24
                             }} onPress={() => handleModal()}>
                                 <Text style={{ color: Color.inquiryBlue, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.cancel}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={{
-                                width: ('48%'), height: 45, backgroundColor: Color.inquiryBlue, alignItems: 'center', justifyContent: 'center',
+                                width: wp('38%'), height: 45, backgroundColor: Color.inquiryBlue, alignItems: 'center', justifyContent: 'center',
                                 borderRadius: 24
                             }} onPress={() => generatePO()}>
                                 <Text style={{ color: Color.white, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.ok}</Text>
@@ -492,7 +491,8 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: Color.white,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 0
     },
     inquiryNoTitle: {
         color: Color.black,
@@ -509,7 +509,8 @@ const styles = StyleSheet.create({
         height: 10
     },
     contentContainerStyle: {
-        paddingTop: 5
+        paddingTop: 10,
+        paddingBottom: 50
     },
     listContainer: {
         backgroundColor: Color.white,
@@ -624,9 +625,7 @@ const styles = StyleSheet.create({
     },
     modelHeaderImage: {
         width: 54,
-        height: 54,
-        marginTop: 20,
-        marginBottom: 10
+        height: 54
     },
     cardView: {
         backgroundColor: 'white',

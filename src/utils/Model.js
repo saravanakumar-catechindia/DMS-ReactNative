@@ -66,23 +66,21 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     justifyContent: "center",
-  },
-  text: {
-    paddingTop: 10,
-    textAlign: "center",
-    fontSize: 24,
+    marginTop: 20
   },
   body: {
     justifyContent: "center",
     alignItems: 'center',
-    minHeight: 50,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    paddingTop: 12,
+    paddingBottom: 12
   },
   footer: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
     flexDirection: "row",
+    paddingTop: 12,
+    marginBottom: 20
   },
 })
 
