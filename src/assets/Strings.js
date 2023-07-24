@@ -56,5 +56,24 @@ export default {
     inquiryDeletedSuccessfully: 'Inquiry Deleted Successfully',
     deleteThisInquiry: 'Do You Want to Delete this Inquiry - {{name}}?',
     areYouSure: 'Are You Sure?',
-    inquirySortName: 'IN'
+    inquirySortName: 'IN',
+    factoryMandatory: 'Factory*',
+    contactPersonMandatory: 'Contact Person*',
+    contactNumberMandatory: 'Contact Number*',
+    emailMandatory: 'Email*',
+    addressMandatory: 'Address*',
+    cityMandatory: 'City*',
+    save: 'Save',
+    enterFactoryName: 'Enter Factory Name',
+    pleaseEnterFactoryName: 'Please Enter Factory Name',
+    enterContactPerson: 'Enter Contact Person',
+    pleaseEnterContactPerson: 'Please Enter Contact Person',
+    enterContactNumber: 'Enter Contact Number',
+    pleaseEnterContactNumber: 'Please Enter Contact Number',
+    enterAddress: 'Enter Address',
+    pleaseEnterAddress: 'Please Enter Address',
+    enterCity: 'Enter City',
+    pleaseEnterCity: 'Please Enter City',
+    factoryAddedSuccessfully: 'Factory Added Successfully'
+   
 }
