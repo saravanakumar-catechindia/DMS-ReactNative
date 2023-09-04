@@ -124,6 +124,16 @@ const HomeScreen = ({ navigation }) => {
         })
     }
 
+    const viewPO = async () => {
+        navigation.navigate('ViewPO', {
+            name: 'ViewPO',
+            token: token,
+            userId: userId,
+            companyId: companyId,
+            workspaceId: workspaceId
+        })
+    }
+
     return (
         <View style={styles.MainContainer}>
 
@@ -228,7 +238,7 @@ const HomeScreen = ({ navigation }) => {
                 </Card>
 
                 <Card style={styles.cardViewItem}>
-                    <TouchableOpacity style={styles.itemContainer}>
+                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewPO()}>
                         <Image
                             style={styles.itemIcon}
                             source={require('../assets/image/ic_view_po.png')}>

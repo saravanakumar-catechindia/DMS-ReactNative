@@ -9,6 +9,7 @@ import InquiryDetails from '../screens/InquiryDetails';
 import FactoryResponse from '../screens/FactoryResponse';
 import SelectFactory from '../screens/SelectFactory';
 import InquirySentTo from '../screens/InquirySentTo';
+import ViewPO from '../screens/ViewPO';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -71,6 +72,11 @@ const App = () => {
         <Stack.Screen
           name="InquirySentTo"
           component={InquirySentTo}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="ViewPO"
+          component={ViewPO}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

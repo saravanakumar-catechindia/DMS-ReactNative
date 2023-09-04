@@ -52,9 +52,7 @@ const SelectFactory = ({ navigation, route }) => {
 
     useEffect(() => {
 
-
-
-        getSelectedFactoryList()
+        getSelectedFactoryList(selectedFactoryData)
 
         const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
@@ -99,7 +97,6 @@ const SelectFactory = ({ navigation, route }) => {
                     setData(data.data)
 
                     const updatedData = data.data.map((itemData) => {
-
                         return {
                             id: itemData.id,
                             factory: itemData.factory,
@@ -112,10 +109,9 @@ const SelectFactory = ({ navigation, route }) => {
 
                     });
 
-
-
                     setSelectedFactoryData(updatedData)
 
+                    getSelectedFactoryList(updatedData)
 
                 }
 
@@ -132,7 +128,7 @@ const SelectFactory = ({ navigation, route }) => {
 
 
 
-    const getSelectedFactoryList = () => {
+    const getSelectedFactoryList = (selectedFactoryData) => {
 
         setLoading(true);
 
@@ -309,7 +305,7 @@ const SelectFactory = ({ navigation, route }) => {
 
                 if (data.status_code == 200) {
                     showAlertOrToast(String.inquirySendSuccessfully)
-                    getSelectedFactoryList()
+                    getSelectedFactoryList(selectedFactoryData)
                 }
             })
             .catch((error) => {
@@ -350,6 +346,12 @@ const SelectFactory = ({ navigation, route }) => {
 
                 if (data.status_code == 200) {
                     handleModal()
+                    setFactoryName('')
+                    setContactPerson('')
+                    setContactNumber('')
+                    setEmail('')
+                    setAddress('')
+                    setCity('')
                     showAlertOrToast(String.factoryAddedSuccessfully)
                     getFactoryList()
                 } else if(data.status_code == 401) {

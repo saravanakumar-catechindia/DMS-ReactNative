@@ -74,6 +74,14 @@ export default {
     pleaseEnterAddress: 'Please Enter Address',
     enterCity: 'Enter City',
     pleaseEnterCity: 'Please Enter City',
-    factoryAddedSuccessfully: 'Factory Added Successfully'
-   
+    factoryAddedSuccessfully: 'Factory Added Successfully',
+    poId: 'PO Id',
+    inquiryNo: 'Inquiry No',
+    factoryName: 'Factory Name',
+    view: 'View',
+    po: 'PO',
+    inquiryShortName: 'IN',
+    cancelled: 'Cancelled',
+    areYouSureYouWantToCancelTheGeneratedPO: 'Are you sure you want to cancel the Generated PO?',
+    poCancelledSuccessfully: 'PO Cancelled Successfully'
 }
