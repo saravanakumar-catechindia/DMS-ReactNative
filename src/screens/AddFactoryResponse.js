@@ -12,23 +12,18 @@ import { apidecrypt, apiencrypt, showAlertOrToast } from '../utils/Helper';
 import Pdf from 'react-native-pdf';
 import SelectDropdown from 'react-native-select-dropdown';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { TextInput } from "react-native-paper";
 
 
 
 
 
-const FactoryResponse = ({ navigation, route }) => {
+const AddFactoryResponse = ({ navigation, route }) => {
     const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 35 : 0;
 
-
-    const DATA = [
-    ];
-
-    const [Data, setData] = useState(DATA);
-    const [pdfUrl, setPdfUrl] = useState(route.params.pdfUrl)
     const [inquiryId, setInquiryId] = useState(route.params.id)
     const [fromInquiryList, setFromInquiryList] = useState(route.params.fromInquiryList)
-    const [isShowInquiryNo, setIsShowInquiryNo] = useState(false)
+
     const [isShowDropDown, setIsShowDropDown] = useState(false)
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState(route.params.token);
@@ -39,30 +34,39 @@ const FactoryResponse = ({ navigation, route }) => {
     const [factoryId, setFactoryId] = useState('')
     const [isFocus, setIsFocus] = useState(false)
     const [selectedItem, setSelectedItem] = useState('')
-    const data1 = []
     const [dropDownValues, setDropDownValues] = useState([])
 
     const upArrow = require('../assets/image/ic_drop_down_up.png')
     const downArrow = require('../assets/image/ic_drop_down_down.png')
     const [isModalVisible, setModalVisible] = useState(false)
-    const [isPoGenerated, setIsPoGenerated] = useState(false)
-    const [nonDMSFactoryList, setNonDmsFactoryList] = useState([]);
-
+    const [nonDMSFactoryList, setNonDmsFactoryList] = useState(route.params.data);
+    const [price, setPrice] = useState('')
+    const [comments, setComments] = useState('')
+    const inputRefPrice = useRef();
+    const [priceValidationError, setPriceValidationError] = useState('')
+    const [commentsValidationError, setCommentsValidationError] = useState('')
 
 
 
     useEffect(() => {
-        if (fromInquiryList) {
-            getInquiryList()
-        } else {
-            getFactoryResponseList(inquiryId)
-        }
-        const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 
+        //  getNonDMSFactoryList(inquiryId)
+
+
+        var dataArray = nonDMSFactoryList
+        console.log('dataArray inside ', dataArray)
+
+        let inData = [...dropDownValues]
+        dataArray.map((item) => {
+            inData.push({ title: item.factory, id: item.id })
+        });
+        setDropDownValues(inData)
+
+
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 
         return () => {
             backHandler.remove()
-            //BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
         };
     }, [])
 
@@ -73,59 +77,6 @@ const FactoryResponse = ({ navigation, route }) => {
     }
 
 
-    const getInquiryList = () => {
-
-        setLoading(true);
-
-        axios.post('get-inquiry', apiencrypt({
-            user_id: userId,
-            company_id: companyId,
-            workspace_id: workspaceId,
-            page: 1,
-            article_id: '',
-            factory_id: '',
-            from_date: '',
-            to_date: ''
-        }), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-        })
-            .then((response) => {
-                console.log('response', response.data)
-
-                console.log(apidecrypt(response.data))
-
-                let data = apidecrypt(response.data);
-
-                if (data.hasOwnProperty('data')) {
-                    if (data.hasOwnProperty('data')) {
-
-                        var dataArray = data.data.data
-                        console.log('dataArray inside ', dataArray)
-
-                        let inData = [...dropDownValues]
-                        dataArray.map((item) => {
-                            inData.push({ title: String.inquiryShortForm + '-' + item.id, id: item.id })
-                        });
-                        setDropDownValues(inData)
-                    }
-                }
-
-            })
-            .catch((error) => {
-                showAlertOrToast(error.toString())
-            }).then(function () {
-                // always executed
-                setLoading(false);
-                if (fromInquiryList) {
-                    setIsShowDropDown(true)
-                }
-            });
-
-
-    }
 
     const handleChange = (newValue) => {
         setDropDownValues((prevState) => [...prevState, newValue]);
@@ -133,23 +84,6 @@ const FactoryResponse = ({ navigation, route }) => {
 
     const handleModal = () => {
         setModalVisible(!isModalVisible)
-    }
-
-    const generatePoClicked = (factoryId) => {
-        setFactoryId(factoryId)
-        handleModal()
-    }
-
-    const addFactoryResponse = async () => {
-        navigation.navigate('AddFactoryResponse', {
-            name: 'AddFactoryResponse',
-            id: inquiryId,
-            token: token,
-            userId: userId,
-            companyId: companyId,
-            data: nonDMSFactoryList,
-            userType: userType
-        })
     }
 
 
@@ -174,7 +108,6 @@ const FactoryResponse = ({ navigation, route }) => {
 
                 let data = apidecrypt(response.data);
 
-              //  console.log(apidecrypt(response.data.data))
 
                 if (data.hasOwnProperty('notifications')) {
                     setNonDmsFactoryList(data.notifications)
@@ -189,59 +122,19 @@ const FactoryResponse = ({ navigation, route }) => {
             });
     }
 
-    const getFactoryResponseList = (inquiryId) => {
 
-        setLoading(true);
-
-        axios.post('inquiry-factory-response', apiencrypt({
-            user_id: userId,
-            inquiry_id: inquiryId
-        }), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-        })
-            .then((response) => {
-                console.log('response', response.data)
-
-                console.log(apidecrypt(response.data))
-
-                let data = apidecrypt(response.data);
-
-                if (data.hasOwnProperty('data')) {
-                    data.data.map((item) => {
-                        if (item.is_po_generated == 1) {
-                            setIsPoGenerated(true)
-                        }
-                    });
-                    setData(data.data)
-                }
-
-                getNonDMSFactoryList(inquiryId)
-
-            })
-            .catch((error) => {
-                showAlertOrToast(error.toString())
-            }).then(function () {
-                // always executed
-                setLoading(false);
-                if (!fromInquiryList) {
-                    setIsShowInquiryNo(true)
-                }
-            });
-    }
-
-    const generatePO = () => {
+    const postAddNewFactoryResponse = () => {
 
         handleModal()
         setLoading(true);
 
-        axios.post('generate-po', apiencrypt({
+        axios.post('save-buyer-inquiry-factory-response', apiencrypt({
             inquiry_id: inquiryId,
-            company_id: companyId,
             factory_id: factoryId,
-            workspace_id: workspaceId
+            user_id: userId,
+            user_type: userType,
+            price: price,
+            comments: comments
         }), {
             headers: {
                 'Content-Type': 'application/json',
@@ -257,8 +150,9 @@ const FactoryResponse = ({ navigation, route }) => {
 
 
                 if (data.status_code == 200) {
-                    getFactoryResponseList(inquiryId)
-                    showAlertOrToast(String.poGeneratedSuccessfully)
+
+                    showAlertOrToast(String.inquiryResponseAddedSuccessfully)
+                    handleBackButtonClick()
                 }
 
             })
@@ -273,57 +167,43 @@ const FactoryResponse = ({ navigation, route }) => {
             });
     }
 
-    const renderListItem = ({ item, index }) => (
 
-        <Card style={styles.cardView}>
-            <View style={styles.listContainer} key={item.inquiry_id}>
-
-
-                <View style={styles.itemContainer} >
-                    <Text style={styles.itemTitle}>{String.factory}</Text>
-                    <Text style={styles.itemTitle}>{String.contactName}</Text>
-                </View>
-
-                <View style={styles.itemContainer} >
-                    <Text style={styles.itemContent}>{item.factory}</Text>
-                    <Text style={styles.itemContent}>{item.contact_person}</Text>
-                </View>
-
-                <View style={styles.itemContainer} >
-                    <Text style={styles.itemTitle}>{String.phoneNumber}</Text>
-                    <Text style={styles.itemTitle}>{String.price}</Text>
-                </View>
-
-                <View style={styles.itemContainerLast} >
-                    <Text style={styles.itemContent}>{item.contact_number}</Text>
-                    <Text style={styles.itemPrice}>{item.price}</Text>
-                </View>
-
-
-                {isShowDropDown ? null : <TouchableOpacity style={styles.itemPOContainerLast} disabled={isPoGenerated} onPress={() => generatePoClicked(item.factory_contact_id)}>
-                    <Text style={styles.itemPOTitle}>{String.generatePurchaseOrder}</Text>
-                    <Image style={styles.poImage}
-                        source={item.is_po_generated == 1 ? require('../assets/image/ic_generate_purchase_order_blue.png') : require('../assets/image/ic_generate_po_gray.png')}>
-                    </Image>
-                </TouchableOpacity>
-                }
-
-            </View>
-        </Card>
-    );
 
 
     const renderLabel = () => {
         if (selectedItem || isFocus) {
             return (
                 <Text style={[styles.label, isFocus && { color: Color.inquiryBlue }]}>
-                    {String.inquiryNo}
+                    {String.factoryMandatory}
                 </Text>
             );
         }
         return null;
     };
 
+
+    const resetErrorValue = () => {
+        setPriceValidationError('')
+        setCommentsValidationError('')
+    }
+
+    const validateAddFactoryRespone = () => {
+        resetErrorValue()
+        if(factoryId == 0) {
+            showAlertOrToast(String.pleaseSelectFactory)
+            return 
+        }
+        if (Object.keys(price).length == 0) {
+            setPriceValidationError(String.pleaseEnterPrice)
+            return
+        }
+        if (Object.keys(comments).length == 0) {
+            setCommentsValidationError(String.pleaseEnterComments)
+            return
+        }
+
+        postAddNewFactoryResponse()
+    }
 
     return (
 
@@ -347,7 +227,7 @@ const FactoryResponse = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 <View style={styles.navBarTitleStyle}>
-                    <Text style={styles.toolBarText}>{String.factoryResponse}</Text>
+                    <Text style={styles.toolBarText}>{String.addFactoryResponse}</Text>
                 </View>
 
                 <View style={styles.navBarItemStyle}>
@@ -360,23 +240,26 @@ const FactoryResponse = ({ navigation, route }) => {
 
             <View style={styles.container}>
 
-                {isShowInquiryNo ?
-                    <View style={styles.inquiryNumberLay}>
-                        <Text style={styles.inquiryNoTitle}>{String.inquiryNoColon}</Text>
-                        <Text style={styles.inquiryNo}>{String.inquiryShortForm + '-' + inquiryId}</Text>
-                    </View>
-                    : null}
 
-                {isShowDropDown ? <View style={styles.dropDownContainer}>
+            {loading ?
+                    <Loader />
+                    : <View>
+                <View style={styles.inquiryNumberLay}>
+                    <Text style={styles.inquiryNoTitle}>{String.inquiryNoColon}</Text>
+                    <Text style={styles.inquiryNo}>{String.inquiryShortForm + '-' + inquiryId}</Text>
+                </View>
+
+
+                <View style={styles.dropDownContainer}>
 
                     {renderLabel()}
                     <SelectDropdown
                         data={dropDownValues}
-                        defaultButtonText={String.selectInquiryNo}
+                        defaultButtonText={String.selectFactory}
                         onSelect={(selectedItem, index) => {
                             setSelectedItem(selectedItem)
-                            setInquiryId(selectedItem.id)
-                            getFactoryResponseList(selectedItem.id)
+                            setFactoryId(selectedItem.id)
+                            resetErrorValue()
                             console.log(selectedItem, index)
                         }}
                         buttonTextAfterSelection={(selectedItem, index) => {
@@ -403,7 +286,7 @@ const FactoryResponse = ({ navigation, route }) => {
                                     <Text style={{
                                         color: selectedItem ? Color.black : Color.hintColor,
                                         textAlign: 'left', fontSize: 12, fontFamily: Fontfamily.poppinsMedium
-                                    }}>{selectedItem ? selectedItem.title : String.selectInquiryNo}</Text>
+                                    }}>{selectedItem ? selectedItem.title : String.selectFactory}</Text>
                                 </View>
                             );
                         }}
@@ -421,74 +304,92 @@ const FactoryResponse = ({ navigation, route }) => {
                             );
                         }}
                     />
-                </View> : null}
 
-                {loading ?
-                    <Loader />
-                    : <FlatList
-                        data={Data}
-                        keyExtractor={item => item.id}
-                        renderItem={({ item, index }) => {
-                            return renderListItem({ item, index });
-                        }}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.contentContainerStyle}
-                        ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
-                        showsVerticalScrollIndicator={false}
-                    />
-                }
+                    {/* price textinout lay */}
+                    <View style={styles.bsTextInputContainer}>
+                        <TextInput
+                            style={styles.textInput}
+                            mode="outlined"
+                            outlineColor={Color.black}
+                            activeOutlineColor={Color.inquiryBlue}
+                            label={String.priceMandatory}
+                            keyboardType='number-pad'
+                            returnKeyType='next'
+                            placeholder={String.enterPrice}
+                            placeholderStyle={{
+                                fontFamily: Fontfamily.poppinsMedium,
+                                fontSize: 12,
+                            }}
+                            value={price}
+                            onChangeText={(price) => setPrice(price)}
+                            theme={{ roundness: 5 }}
+                            editable={true}
+                            onSubmitEditing={() => inputRefPrice.current.focus()}
+                        />
 
+                        {priceValidationError.length > 0 ?
+                            <Image style={styles.errorImage}
+                                source={require('../assets/image/exclamation.png')}
+                            ></Image> : null
+                        }
+                    </View>
+
+                     <Text style={styles.errorText}>{priceValidationError}</Text> 
+                    {/* price textinout lay */}
+
+                    {/* comments textinout lay */}
+                    <View style={styles.bsTextInputContainerCm}>
+                        <TextInput
+                            ref={inputRefPrice}
+                            style={styles.textInputCm}
+                            mode="outlined"
+                            outlineColor={Color.black}
+                            activeOutlineColor={Color.inquiryBlue}
+                            label={String.comments}
+                            keyboardType='default'
+                            returnKeyType='done'
+                            placeholder={String.enterComments}
+                            placeholderStyle={{
+                                fontFamily: Fontfamily.poppinsMedium,
+                                fontSize: 12,
+                            }}
+                            value={comments}
+                            onChangeText={(comments) => setComments(comments)}
+                            theme={{ roundness: 5 }}
+                            editable={true}
+                            multiline={true}
+                        />
+
+                        {commentsValidationError.length > 0 ?
+                            <Image style={styles.errorImage}
+                                source={require('../assets/image/exclamation.png')}
+                            ></Image> : null
+                        }
+                    </View>
+
+                 <Text style={styles.errorText}>{commentsValidationError}</Text>
+                    {/* price textinout lay */}
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.buttonCancel} onPress={() => handleModal()}>
+                            <Text style={styles.buttonCancelText}>{String.cancel}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonSave} onPress={() => validateAddFactoryRespone()}>
+                            <Text style={styles.buttonSaveText}>{String.save}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+
+
+                </View> }
             </View>
 
 
 
-          {nonDMSFactoryList.length > 0 ?  <TouchableOpacity style={{
-                width: wp('50%'), height: 45, backgroundColor: Color.inquiryBlue, alignItems: 'center', justifyContent: 'center',
-                borderRadius: 24, alignSelf: 'center', marginBottom: 25
-            }} onPress={() => addFactoryResponse()}>
-                <Text style={{ color: Color.white, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.plusAddFactoryResponse}</Text>
-            </TouchableOpacity>
-            : null }
 
-
-            {/* Modal Popup  lay*/}
-            <Modal isVisible={isModalVisible}>
-                <Modal.Container>
-                    <Modal.Header style={{ alignItems: 'center' }}>
-                        <Image style={styles.modelHeaderImage}
-                            source={require('../assets/image/ic_info_light_sandal.png')}>
-                        </Image>
-
-                    </Modal.Header>
-                    <Modal.Body>
-                        <View style={{ width: wp('80%'), backgroundColor: '#fff', justifyContent: 'center' }}>
-                            <Text style={{
-                                color: Color.black, fontSize: 16, textAlign: 'center',
-                                fontFamily: Fontfamily.poppinsMedium
-                            }} >{String.doYouWantToGenerateThePurchaseOrder}
-                            </Text>
-                        </View>
-
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <View style={{ width: wp('80%'), alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
-                            <TouchableOpacity style={{
-                                width: wp('38%'), height: 45, backgroundColor: Color.inquiryBlueLight, alignItems: 'center', justifyContent: 'center',
-                                borderRadius: 24
-                            }} onPress={() => handleModal()}>
-                                <Text style={{ color: Color.inquiryBlue, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.cancel}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{
-                                width: wp('38%'), height: 45, backgroundColor: Color.inquiryBlue, alignItems: 'center', justifyContent: 'center',
-                                borderRadius: 24
-                            }} onPress={() => generatePO()}>
-                                <Text style={{ color: Color.white, fontFamily: Fontfamily.poppinsMedium, fontSize: 12, }}>{String.ok}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Modal.Footer>
-                </Modal.Container>
-            </Modal>
-            {/* Modal Popup  lay*/}
+    
 
 
 
@@ -496,7 +397,7 @@ const FactoryResponse = ({ navigation, route }) => {
     );
 
 };
-export default FactoryResponse;
+export default AddFactoryResponse;
 
 const styles = StyleSheet.create({
     MainContainer: {
@@ -518,7 +419,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     navBarItemStyle: {
-        flex: 1,
+        flex: 0.7,
         height: 55,
         alignItems: 'center',
         justifyContent: 'center',
@@ -692,5 +593,78 @@ const styles = StyleSheet.create({
         paddingLeft: 0,
         paddingRight: 0,
         shadowOpacity: 0.25
+    },
+    bsTextInputContainer: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginTop: 20
+    },
+    textInput: {
+        width: ('100%'),
+        color: Color.black,
+        fontSize: 12,
+        fontFamily: Fontfamily.poppinsSemiBold,
+
+    },
+    bsTextInputContainerCm: {
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    textInputCm: {
+        width: ('100%'),
+        minHeight: 85,
+        color: Color.black,
+        fontSize: 12,
+        fontFamily: Fontfamily.poppinsSemiBold,
+
+    },
+    errorImage: {
+        width: 18,
+        height: 18,
+        resizeMode: 'contain',
+        marginLeft: 'auto',
+        marginRight: 10,
+        marginTop: 15
+    },
+    errorText: {
+        width: ('100%'),
+        color: Color.pink,
+        fontFamily: Fontfamily.poppinsMedium,
+        fontSize: 12,
+        marginLeft: 15,
+        marginTop: 5
+    },
+    buttonContainer: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        marginTop: 5
+    },
+    buttonCancel: {
+        width: wp('40%'),
+        height: 45,
+        backgroundColor: Color.inquiryBlueLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 24
+    },
+    buttonSave: {
+        width: wp('40%'),
+        height: 45,
+        backgroundColor: Color.inquiryBlue,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 24
+    },
+    buttonCancelText: {
+        color: Color.inquiryBlue,
+        fontFamily: Fontfamily.poppinsMedium,
+        fontSize: 12
+    },
+    buttonSaveText: {
+        color: Color.white,
+        fontFamily: Fontfamily.poppinsMedium,
+        fontSize: 12
     }
 })

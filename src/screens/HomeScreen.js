@@ -18,6 +18,8 @@ const HomeScreen = ({ navigation }) => {
     const [workspaceId, setWorkspaceId] = useState('')
     const [token, setToken] = useState('');
     const [loading, setLoading] = useState(false);
+    const [userType, setUserType] = useState(false)
+    const [workspaceType, setWorkspaceType] = useState(false)
 
     const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 35 : 0;
 
@@ -103,6 +105,8 @@ const HomeScreen = ({ navigation }) => {
                     setCompannyId(parsedValue.companyId);
                     setWorkspaceId(parsedValue.workspaceId);
                     setToken(parsedValue.token)
+                    setUserType(parsedValue.userType)
+                    setWorkspaceType(parsedValue.workspaceType)
                 }
                 return parsedValue;
             }
@@ -120,7 +124,8 @@ const HomeScreen = ({ navigation }) => {
             userId: userId,
             companyId: companyId,
             workspaceId: workspaceId,
-            fromInquiryList: true
+            fromInquiryList: true,
+            userType: userType
         })
     }
 
@@ -134,6 +139,17 @@ const HomeScreen = ({ navigation }) => {
         })
     }
 
+    const viewMaterialAndLabel = async () => {
+        navigation.navigate('MaterialAndLabel', {
+            name: 'MaterialAndLabel',
+            token: token,
+            userId: userId,
+            companyId: companyId,
+            workspaceId: workspaceId,
+            workspaceType: workspaceType,
+            userType: userType
+        })
+    }
     return (
         <View style={styles.MainContainer}>
 
@@ -258,7 +274,7 @@ const HomeScreen = ({ navigation }) => {
 
 
                 <Card style={styles.cardViewItem}>
-                    <TouchableOpacity style={styles.itemContainer}>
+                    <TouchableOpacity style={styles.itemContainer} onPress={() => viewMaterialAndLabel()}>
                         <Image
                             style={styles.itemIcon}
                             source={require('../assets/image/ic_material_label.png')}>

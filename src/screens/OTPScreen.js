@@ -212,7 +212,8 @@ const OTPScreen = ({ navigation, route }) => {
                             workspaceType: workspaceType,
                             role: role,
                             dateformat: dateformat,
-                            token: token
+                            token: token,
+                            userType: 'User'
                         }
 
                         storeObjectData('user_data', userObject);

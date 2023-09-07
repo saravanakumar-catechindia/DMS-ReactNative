@@ -89,7 +89,7 @@ const SelectFactory = ({ navigation, route }) => {
             .then((response) => {
                 // console.log('response', response.data)
 
-                //   console.log(apidecrypt(response.data))
+                // console.log(apidecrypt(response.data))
 
                 let data = apidecrypt(response.data)
 

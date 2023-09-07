@@ -83,5 +83,19 @@ export default {
     inquiryShortName: 'IN',
     cancelled: 'Cancelled',
     areYouSureYouWantToCancelTheGeneratedPO: 'Are you sure you want to cancel the Generated PO?',
-    poCancelledSuccessfully: 'PO Cancelled Successfully'
+    poCancelledSuccessfully: 'PO Cancelled Successfully',
+    addFactoryResponse: 'Add Factory Response',
+    plusAddFactoryResponse: '+ Add Factory Response',
+    selectFactory: 'Select Factory',
+    priceMandatory: 'Price*',
+    enterPrice: 'Enter Price',
+    pleaseEnterPrice: 'Please Enter Price',
+    comments: 'Comments*',
+    enterComments: 'Enter Comments',
+    pleaseEnterComments: 'Please Enter Comments',
+    pleaseEnterComments: 'Please Enter Comments',
+    pleaseSelectFactory: 'Please Select Factory',
+    inquiryResponseAddedSuccessfully: 'Inquiry Response Added Successfully',
+    po: 'PO',
+    selectPurchaseOrderId: 'Selecte Purchase Order Id'
 }

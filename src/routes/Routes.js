@@ -10,6 +10,8 @@ import FactoryResponse from '../screens/FactoryResponse';
 import SelectFactory from '../screens/SelectFactory';
 import InquirySentTo from '../screens/InquirySentTo';
 import ViewPO from '../screens/ViewPO';
+import AddFactoryResponse from '../screens/AddFactoryResponse';
+import MaterialAndLabel from '../screens/MaterialAndLabel';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -77,6 +79,16 @@ const App = () => {
          <Stack.Screen
           name="ViewPO"
           component={ViewPO}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="AddFactoryResponse"
+          component={AddFactoryResponse}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="MaterialAndLabel"
+          component={MaterialAndLabel}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
