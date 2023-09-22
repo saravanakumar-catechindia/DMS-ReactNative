@@ -97,5 +97,14 @@ export default {
     pleaseSelectFactory: 'Please Select Factory',
     inquiryResponseAddedSuccessfully: 'Inquiry Response Added Successfully',
     po: 'PO',
-    selectPurchaseOrderId: 'Selecte Purchase Order Id'
+    selectPurchaseOrderId: 'Selecte Purchase Order Id',
+    all: 'All',
+    printArtWork: 'Print Art Work',
+    mainLabel: 'Main Label',
+    washCare: 'Wash Care',
+    hangTag: 'Hangtag',
+    barCode: 'Barcode',
+    polyBag: 'Polybag',
+    carton: 'Carton',
+    search: 'Search'
 }

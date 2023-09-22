@@ -13,7 +13,12 @@ import Pdf from 'react-native-pdf';
 import SelectDropdown from 'react-native-select-dropdown';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { TextInput } from "react-native-paper";
-
+import CheckBox from '@react-native-community/checkbox';
+import { NavigationContainer } from '@react-navigation/native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import PrintInfoScreen from './PrintInfoScreen';
+import TermsInfoScreen from './TermsInfoScreen';
+import PackingInfoScreen from './PackingInfoScreen';
 
 
 
@@ -21,7 +26,7 @@ import { TextInput } from "react-native-paper";
 const MaterialAndLabel = ({ navigation, route }) => {
     const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 35 : 0;
 
-    const [inquiryId, setInquiryId] = useState(route.params.id)
+    const [inquiryId, setInquiryId] = useState('')
     const [fromInquiryList, setFromInquiryList] = useState(route.params.fromInquiryList)
 
     const [isShowDropDown, setIsShowDropDown] = useState(false)
@@ -41,7 +46,20 @@ const MaterialAndLabel = ({ navigation, route }) => {
     const downArrow = require('../assets/image/ic_drop_down_down.png')
     const [isModalVisible, setModalVisible] = useState(false)
     const [nonDMSFactoryList, setNonDmsFactoryList] = useState(route.params.data);
+    const [allCheckBox, setAllCheckBox] = useState(false)
+    const [printArtWorkCheckBox, setPrintArtWorkCheckBox] = useState(false)
+    const [mainLabelCheckBox, setMainLabelCheckBox] = useState(false)
+    const [washCareCheckBox, setWashCareCheckBox] = useState(false)
+    const [hangTagCheckBox, setHangTagCheckBox] = useState(false)
+    const [barCodeCheckBox, setBarCodeCheckBox] = useState(false)
+    const [polyBagCheckBox, setPolybagCheckBox] = useState(false)
+    const [cartonCheckBox, setCartonCheckBox] = useState(false)
+    const [filterType, setFilterType] = useState([])
 
+
+
+
+    const Tab = createMaterialTopTabNavigator();
 
 
     useEffect(() => {
@@ -113,7 +131,159 @@ const MaterialAndLabel = ({ navigation, route }) => {
 
     }
 
+    const onSearchButtonClick = () => {
+        console.log('printArtWorkOnClick filterType ', filterType)
+        console.log('inquiryId ' + inquiryId)
+        getInquiryPoChatList()
+    }
+    const handleAllCheckBoxCheckedChangeEvent = (newValue) => {
+        if(allCheckBox == true && newValue == false) {
+            setAllCheckBox(false)
+        }
+    }
+    const printArtWorkOnClick = (newValue) => {
+        setPrintArtWorkCheckBox(newValue)
+        handleAllCheckBoxCheckedChangeEvent(newValue)
+        if(newValue) {
+            addFilterArrayValue('printArtwork')
+        } else {
+            deleteFilterArrayValue('printArtwork')
+        }
+    }
+    const mainLabelOnClick = (newValue) => {
+        setMainLabelCheckBox(newValue)
+        handleAllCheckBoxCheckedChangeEvent(newValue)
+        if(newValue) {
+            addFilterArrayValue('mainLabel')
+        } else {
+            deleteFilterArrayValue('mainLabel')
+        }
+    }
+    const washcareOnClick = (newValue) => {
+        setWashCareCheckBox(newValue)
+        handleAllCheckBoxCheckedChangeEvent(newValue)
+        if(newValue) {
+            addFilterArrayValue('washCare')
+        } else {
+            deleteFilterArrayValue('washCare')
+        }
+    }
+    const handTagOnClick = (newValue) => {
+        setHangTagCheckBox(newValue)
+        handleAllCheckBoxCheckedChangeEvent(newValue)
+        if(newValue) {
+            addFilterArrayValue('hangtag')
+        } else {
+            deleteFilterArrayValue('hangtag')
+        }
+    }
+    const barcodeOnClick = (newValue) => {
+        setBarCodeCheckBox(newValue)
+        handleAllCheckBoxCheckedChangeEvent(newValue)
+        if(newValue) {
+            addFilterArrayValue('barcode')
+        } else {
+            deleteFilterArrayValue('barcode')
+        }
+    }
+    const polybagOnClick = (newValue) => {
+        setPolybagCheckBox(newValue)
+        handleAllCheckBoxCheckedChangeEvent(newValue)
+        if(newValue) {
+            addFilterArrayValue('polybag')
+        } else {
+            deleteFilterArrayValue('polybag')
+        }
+    }
+    const cartonOnClick = (newValue) => {
+        setCartonCheckBox(newValue)
+        handleAllCheckBoxCheckedChangeEvent(newValue)
+        if(newValue) {
+            addFilterArrayValue('carton')
+        } else {
+            deleteFilterArrayValue('carton')
+        }
+    }
 
+    const allCheckBoxOnClick = (newValue) => {
+        setAllCheckBox(newValue)
+        setPrintArtWorkCheckBox(newValue)
+        setMainLabelCheckBox(newValue)
+        setWashCareCheckBox(newValue)
+        setHangTagCheckBox(newValue)
+        setBarCodeCheckBox(newValue)
+        setPolybagCheckBox(newValue)
+        setCartonCheckBox(newValue)
+        if(newValue) {
+            let tempArray = ['printArtwork', 'mainLabel', 'washCare', 'hangtag', 'barcode', 'polybag', 'carton']
+            setFilterType(tempArray)
+        } else {
+            setFilterType([])
+        }
+    }
+
+
+    const addFilterArrayValue = (newValue) => {
+        let tempArray = [...filterType, newValue]
+        setFilterType(tempArray)
+    }
+
+    const deleteFilterArrayValue = (value) => {
+        let tempArray = [...filterType]
+        let index = tempArray.indexOf(value)
+        tempArray.splice(index, 1)
+        setFilterType(tempArray)
+      }
+
+    const getInquiryPoChatList = () => {
+
+     //   setLoading(true);
+
+        axios.post('get-inquiry-po-chat', apiencrypt({
+            user_id: userId,
+            company_id: companyId,
+            workspace_id: workspaceId,
+            user_type: userType,
+            inquiry_id: inquiryId,
+            filter_type: filterType
+        }), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then((response) => {
+                console.log('response', response.data)
+
+                console.log(apidecrypt(response.data))
+
+                let data = apidecrypt(response.data);
+
+                if (data.hasOwnProperty('data')) {
+                    if (data.hasOwnProperty('data')) {
+
+                        var dataArray = data.data
+                        console.log('dataArray inside ', dataArray)
+
+                        let inData = [...dropDownValues]
+                        dataArray.map((item) => {
+                            inData.push({ title: String.po + '-' + item.id, id: item.inquiry_id })
+                        });
+                        setDropDownValues(inData)
+                    }
+                }
+
+            })
+            .catch((error) => {
+                showAlertOrToast(error.toString())
+            }).then(function () {
+                // always executed
+                setLoading(false);
+               
+            });
+
+
+    }
 
 
 
@@ -141,6 +311,8 @@ const MaterialAndLabel = ({ navigation, route }) => {
         }
         return null;
     };
+
+   
 
     return (
 
@@ -189,7 +361,7 @@ const MaterialAndLabel = ({ navigation, route }) => {
                             defaultButtonText={String.selectPurchaseOrderId}
                             onSelect={(selectedItem, index) => {
                                 setSelectedItem(selectedItem)
-                                setFactoryId(selectedItem.id)
+                                setInquiryId(selectedItem.id)
                                 resetValue()
                                 console.log(selectedItem, index)
                             }}
@@ -242,6 +414,201 @@ const MaterialAndLabel = ({ navigation, route }) => {
 
                     </View>
 
+                    <View style={styles.checkBoxContainer}>
+
+
+                        <View style={styles.itemContainer}>
+                            <View style={styles.checkBoxTextCointainer}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={allCheckBox}
+                                    onValueChange={(newValue) => allCheckBoxOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.all}</Text>
+                            </View>
+                            <View style={styles.checkBoxTextCointainer}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={printArtWorkCheckBox}
+                                    onValueChange={(newValue) => printArtWorkOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.printArtWork}</Text>
+                            </View>
+                            <View style={styles.checkBoxTextCointainerEnd}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={mainLabelCheckBox}
+                                    onValueChange={(newValue) => mainLabelOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.mainLabel}</Text>
+                            </View>
+                        </View>
+
+
+
+                        <View style={styles.itemContainer}>
+                            <View style={styles.checkBoxTextCointainer}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={washCareCheckBox}
+                                    onValueChange={(newValue) => washcareOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.washCare}</Text>
+                            </View>
+                            <View style={styles.checkBoxTextCointainer}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={hangTagCheckBox}
+                                    onValueChange={(newValue) => handTagOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.hangTag}</Text>
+                            </View>
+                            <View style={styles.checkBoxTextCointainerEnd}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={barCodeCheckBox}
+                                    onValueChange={(newValue) => barcodeOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.barCode}</Text>
+                            </View>
+                        </View>
+
+
+
+                        <View style={styles.itemContainer}>
+                            <View style={styles.checkBoxTextCointainer}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={polyBagCheckBox}
+                                    onValueChange={(newValue) => polybagOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.polyBag}</Text>
+                            </View>
+                            <View style={styles.checkBoxTextCointainer}>
+                                <CheckBox
+                                    disabled={false}
+                                    value={cartonCheckBox}
+                                    onValueChange={(newValue) => cartonOnClick(newValue)}
+                                    boxType={'square'}
+                                    onAnimationType={'bounce'}
+                                    offAnimationType={'stroke'}
+                                    style={styles.checkBox}
+                                    tintColors={{ true: Color.inquiryBlue }}
+                                />
+                                <Text style={styles.checkBoxText}>{String.carton}</Text>
+                            </View>
+
+                            <View style={styles.checkBoxTextCointainerEnd}>
+                                <TouchableOpacity style={styles.buttonSearch} onPress={() => onSearchButtonClick()}>
+                                    <Text style={styles.buttonSearchText}>{String.search}</Text>
+                                </TouchableOpacity>
+                            </View>
+
+
+                        </View>
+
+
+
+
+
+
+
+                    </View>
+
+
+
+                    <View style={{ backgroundColor: 'black', flex: 1, width: '100%', marginTop: 10 }}>
+
+                        <Tab.Navigator
+                            initialRouteName="PrintInfo"
+                            screenOptions={({ route }) => ({
+                                tabBarActiveTintColor: Color.inquiryBlueDark,
+                                tabBarInactiveTintColor: Color.black,
+                                tabBarStyle: {
+                                    backgroundColor: Color.white,
+                                    borderColor: Color.borderGray,
+                                    borderWidth: 0.5
+                                },
+                                tabBarLabelStyle: {
+                                    fontSize: 14,
+                                    textAlign: 'center',
+                                    fontFamily: Fontfamily.poppinsMedium,
+                                    textTransform: 'none'
+                                },
+                                tabBarItemStyle: {
+                                    borderRightColor: Color.borderGray,
+                                    borderRightWidth: 0.5 
+                                },
+                                tabBarIndicatorStyle: {
+                                    height: '100%',
+                                    backgroundColor: Color.inquiryBlueLight,
+                                    borderBottomWidth: 1,
+                                    borderBottomColor: Color.inquiryBlueLight,
+                                },
+                               
+                            })}  >
+                            <Tab.Screen
+                                name="PrintInfo"
+                                component={PrintInfoScreen}
+                                options={{
+                                    tabBarLabel: 'Print Info',
+                                    // tabBarIcon: ({ color, size }) => (
+                                    //   <MaterialCommunityIcons name="home" color={color} size={size} />
+                                    // ),
+                                }} />
+                            <Tab.Screen
+                                name="TermsInfo"
+                                component={TermsInfoScreen}
+                                options={{
+                                    tabBarLabel: 'Terms Info'
+                                }} />
+                            <Tab.Screen
+                                name="PackingInfo"
+                                component={PackingInfoScreen}
+                                options={{
+                                    tabBarLabel: 'Packing Info'
+                                }} />
+                        </Tab.Navigator>
+
+                    </View>
+
+
+
                 </View>
             }
 
@@ -250,7 +617,7 @@ const MaterialAndLabel = ({ navigation, route }) => {
 
 
 
-        </View>
+        </View >
     );
 
 };
@@ -332,8 +699,10 @@ const styles = StyleSheet.create({
         backgroundColor: Color.white,
     },
     itemContainer: {
-        justifyContent: 'space-between',
-        flexDirection: 'row'
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
+        paddingTop: 10,
+        paddingBottom: 10
     },
     itemContainerLast: {
         justifyContent: 'space-between',
@@ -506,22 +875,48 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 24
     },
-    buttonSave: {
-        width: wp('40%'),
-        height: 45,
+    buttonSearch: {
+        width: 95,
+        height: 30,
         backgroundColor: Color.inquiryBlue,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 24
+        borderRadius: 24,
+        marginLeft: 10
     },
     buttonCancelText: {
         color: Color.inquiryBlue,
         fontFamily: Fontfamily.poppinsMedium,
         fontSize: 12
     },
-    buttonSaveText: {
+    buttonSearchText: {
         color: Color.white,
         fontFamily: Fontfamily.poppinsMedium,
-        fontSize: 12
-    }
+        fontSize: 11
+    },
+    checkBox: {
+        width: 16,
+        height: 16,
+        marginRight: Platform.OS === 'ios' ? 12 : 18,
+        marginLeft: Platform.OS === 'ios' ? 12 : 4
+    },
+    checkBoxText: {
+        color: Color.black,
+        fontSize: 12,
+        fontFamily: Fontfamily.poppinsMedium
+    },
+    checkBoxTextCointainer: {
+        flexDirection: 'row',
+        flex: 1
+    },
+    checkBoxTextCointainerEnd: {
+        flexDirection: 'row',
+        flex: 0.8,
+        marginRight: 10
+    },
+    checkBoxContainer: {
+        backgroundColor: 'white',
+        padding: 10,
+        marginTop: 8
+    },
 })

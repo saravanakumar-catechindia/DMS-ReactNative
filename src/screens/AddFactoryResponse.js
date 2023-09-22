@@ -371,7 +371,7 @@ const AddFactoryResponse = ({ navigation, route }) => {
                     {/* price textinout lay */}
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.buttonCancel} onPress={() => handleModal()}>
+                        <TouchableOpacity style={styles.buttonCancel} onPress={() => handleBackButtonClick()}>
                             <Text style={styles.buttonCancelText}>{String.cancel}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.buttonSave} onPress={() => validateAddFactoryRespone()}>

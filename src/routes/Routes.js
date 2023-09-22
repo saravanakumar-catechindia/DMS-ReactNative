@@ -91,6 +91,7 @@ const App = () => {
           component={MaterialAndLabel}
           options={{ headerShown: false }}
         />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
